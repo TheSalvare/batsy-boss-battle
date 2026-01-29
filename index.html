@@ -1456,10 +1456,11 @@ const WEAPON_ARM_FRAMES = {
 
         client.on('message', (channel, tags, message, self) => {
             if (self) return;
-            handleCommand(tags['display-name'] || tags.username, message.toLowerCase().trim());
+            const isMod = tags.mod || tags.badges?.broadcaster === '1';
+            handleCommand(tags['display-name'] || tags.username, message.toLowerCase().trim(), isMod);
         });
 
-        function handleCommand(username, message) {
+        function handleCommand(username, message, isMod = false) {
             switch (gameState.phase) {
                 case 'lobby': if (message === '!play') joinGame(username); break;
                 case 'battle':
@@ -1469,7 +1470,7 @@ const WEAPON_ARM_FRAMES = {
                     else if (message.startsWith('!taunt')) playerTaunt(username, message);
                     break;
             }
-            if (message === '!bossfight' || message === '!startboss') startLobby();
+            if ((message === '!bossfight' || message === '!startboss') && isMod) startLobby();
         }
 
         function startPlayerMovement() {
@@ -2291,5 +2292,3 @@ const WEAPON_ARM_FRAMES = {
     </script>
 </body>
 </html>
-
-
