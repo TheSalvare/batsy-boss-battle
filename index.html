@@ -1470,7 +1470,7 @@ const WEAPON_ARM_FRAMES = {
                     else if (message.startsWith('!taunt')) playerTaunt(username, message);
                     break;
             }
-            if ((message === '!bossfight' || message === '!startboss' || message === '!haha') && isMod) startLobby();
+            if ((message === '!bossfight' || message === '!startboss') && isMod) startLobby();
         }
 
         function startPlayerMovement() {
@@ -2292,4 +2292,5 @@ const WEAPON_ARM_FRAMES = {
     </script>
 </body>
 </html>
+
 
