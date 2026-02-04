@@ -1456,7 +1456,6 @@
 
         client.on('message', (channel, tags, message, self) => {
             if (self) return;
-            /*const isMod = tags.mod || tags.badges?.broadcaster === '1';*/
             const isMod = tags.mod || tags.badges?.broadcaster || tags.username.toLowerCase() === 'geor0se';
             handleCommand(tags['display-name'] || tags.username, message.toLowerCase().trim(), isMod);
         });
@@ -2466,3 +2465,4 @@
     </script>
 </body>
 </html>
+
