@@ -1070,6 +1070,18 @@
         .stat-card-name { font-size: 14px; color: var(--rose); margin-bottom: 6px; }
         .stat-card-damage { font-family: 'Press Start 2P', cursive; font-size: 12px; color: var(--health-red); }
         .stat-card-healing { font-family: 'Press Start 2P', cursive; font-size: 12px; color: var(--health-green); }
+        
+        /* Version Label */
+        .version-label {
+            position: absolute;
+            bottom: 10px;
+            left: 15px;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 10px;
+            color: var(--lavender);
+            opacity: 0.6;
+            z-index: 500;
+        }
     </style>
 </head>
 <body>
@@ -1206,6 +1218,9 @@
                 </div>
             </div>
         </div>
+        
+        <!-- Version Label -->
+        <div class="version-label">v2.0</div>
     </div>
 
     <script>
@@ -2069,12 +2084,27 @@
             player.lastAttack = Date.now();
             
             initAudio();
-            playSound('attack');
             
-            const el = document.querySelector(`[data-username="${username}"]`);
-            if (el) { el.classList.add('attacking'); setTimeout(() => el.classList.remove('attacking'), 250); }
+            // Random number of arrows (1-3)
+            const arrowCount = 1 + Math.floor(Math.random() * 3);
+            const arrowInterval = 500; // 0.5 seconds between arrows
             
-            launchPlayerProjectile(player);
+            for (let i = 0; i < arrowCount; i++) {
+                setTimeout(() => {
+                    // Check player is still alive before firing each arrow
+                    if (!player.alive || gameState.phase !== 'battle') return;
+                    
+                    playSound('attack');
+                    
+                    const el = document.querySelector(`[data-username="${username}"]`);
+                    if (el) { 
+                        el.classList.add('attacking'); 
+                        setTimeout(() => el.classList.remove('attacking'), 250); 
+                    }
+                    
+                    launchPlayerProjectile(player);
+                }, i * arrowInterval);
+            }
         }
 
         function launchPlayerProjectile(player) {
