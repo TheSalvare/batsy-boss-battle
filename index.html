@@ -20,7 +20,7 @@
             --health-red: #E85C5C;
             --gold: #FEE590;
             --player-attack: #FAE69B;
-            --phase2-orange: #FF6B35;
+            --rage-orange: #FF6B35;
             --shield-marker: url('images/hit_marker_shield.PNG');
         }
 
@@ -60,8 +60,8 @@
             transition: background 0.5s ease;
         }
 
-        /* Phase 2 darker atmosphere */
-        .game-container.phase2 .cave-background::after {
+        /* Rage mode darker atmosphere */
+        .game-container.rage-mode .cave-background::after {
             background: rgba(26, 21, 32, 0.5);
         }
         .cave-overlay {
@@ -169,8 +169,8 @@
             transition: color 0.3s ease;
         }
 
-        .game-container.phase2 .boss-name {
-            color: var(--phase2-orange);
+        .game-container.rage-mode .boss-name {
+            color: var(--rage-orange);
         }
 
         .boss-health-bar {
@@ -184,8 +184,8 @@
             transition: border-color 0.3s ease;
         }
 
-        .game-container.phase2 .boss-health-bar {
-            border-color: var(--phase2-orange);
+        .game-container.rage-mode .boss-health-bar {
+            border-color: var(--rage-orange);
         }
 
         .boss-health-fill {
@@ -195,8 +195,8 @@
             position: relative;
         }
 
-        .game-container.phase2 .boss-health-fill {
-            background: linear-gradient(180deg, var(--phase2-orange) 0%, #cc4420 100%);
+        .game-container.rage-mode .boss-health-fill {
+            background: linear-gradient(180deg, var(--rage-orange) 0%, #cc4420 100%);
         }
 
         .boss-health-fill::after {
@@ -229,14 +229,14 @@
             transition: color 0.3s ease;
         }
 
-        .game-container.phase2 .boss-phase {
-            color: var(--phase2-orange);
+        .game-container.rage-mode .boss-phase {
+            color: var(--rage-orange);
             animation: phaseGlow 0.5s ease-in-out infinite alternate;
         }
 
         @keyframes phaseGlow {
-            0% { text-shadow: 1px 1px 0 var(--bg-dark), 0 0 10px var(--phase2-orange); }
-            100% { text-shadow: 1px 1px 0 var(--bg-dark), 0 0 20px var(--phase2-orange); }
+            0% { text-shadow: 1px 1px 0 var(--bg-dark), 0 0 10px var(--rage-orange); }
+            100% { text-shadow: 1px 1px 0 var(--bg-dark), 0 0 20px var(--rage-orange); }
         }
 
         /* Boss Sprite - Batsy */
@@ -263,7 +263,7 @@
             transition: filter 0.3s ease;
         }
 
-        .game-container.phase2 .boss-image {
+        .game-container.rage-mode .boss-image {
             filter: drop-shadow(0 8px 20px rgba(0,0,0,0.6)) drop-shadow(0 0 20px rgba(255, 107, 53, 0.5));
         }
 
@@ -284,7 +284,7 @@
             100% { transform: translateY(0) scale(1); }
         }
 
-        /* Phase 2: Frenzy animation */
+        /* Rage mode: Frenzy animation */
         .boss-sprite.frenzied .boss-image {
             animation: bossFrenzy 0.3s ease;
         }
@@ -319,8 +319,8 @@
             image-rendering: pixelated;
         }
 
-        /* Boss Projectiles - Phase 2 */
-        .boss-projectile.phase2 {
+        /* Boss Projectiles - Rage mode */
+        .boss-projectile.rage {
             width: 50px;
             height: 50px;
             filter: drop-shadow(0 0 8px rgba(255, 107, 53, 0.7));
@@ -339,8 +339,8 @@
             image-rendering: pixelated;
         }
 
-        /* Boss Projectiles - Phase 2 */
-        .rain-projectile.phase2 {
+        /* Boss Projectiles - Rage mode */
+        .rain-projectile.rage {
             width: 80px;
             height: 80px;
             filter: drop-shadow(0 0 8px rgba(255, 107, 53, 0.7));
@@ -380,7 +380,7 @@
             height: 45px;
         }
 
-        .impact.phase2 {
+        .impact.rage {
             width: 55px;
             height: 55px;
             filter: hue-rotate(-20deg) brightness(1.2);
@@ -812,6 +812,138 @@
             color: var(--lavender);
             margin-top: 30px;
         }
+        
+        .lobby-tip {
+            font-family: 'VT323', monospace;
+            font-size: 24px;
+            color: var(--lavender);
+            margin-top: 10px;
+            opacity: 0.8;
+        }
+        
+        .lobby-content {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .lobby-player-area {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 20;
+            pointer-events: none;
+        }
+        
+        /* Lobby knight sprites - similar to battle but no health bar */
+        .lobby-knight {
+            position: absolute;
+            width: 61px;
+            height: 76px;
+            z-index: 25;
+            pointer-events: none;
+        }
+        
+        .lobby-knight .knight-image {
+            width: 61px;
+            height: 61px;
+            image-rendering: pixelated;
+        }
+        
+        .lobby-knight .player-arm {
+            position: absolute;
+            top: 11px;
+            left: 0;
+            width: 24px;
+            height: 35px;
+            z-index: 2;
+        }
+        
+        .lobby-knight .player-arm-img {
+            width: 100%;
+            height: 100%;
+            image-rendering: pixelated;
+        }
+        
+        .lobby-knight .lobby-player-name {
+            position: absolute;
+            bottom: -18px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-family: 'Press Start 2P', cursive;
+            font-size: 7px;
+            color: var(--cream);
+            text-shadow: 1px 1px 0 var(--bg-dark);
+            white-space: nowrap;
+        }
+        
+        /* Lobby speech bubble for taunts */
+        .lobby-knight .lobby-speech-bubble {
+            position: absolute;
+            top: -35px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--cream);
+            color: var(--bg-dark);
+            padding: 4px 8px;
+            border-radius: 8px;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 8px;
+            white-space: nowrap;
+            z-index: 100;
+            animation: lobbySpeechPop 2.5s ease-out forwards;
+        }
+        
+        .lobby-knight .lobby-speech-bubble::after {
+            content: '';
+            position: absolute;
+            bottom: -6px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-left: 6px solid transparent;
+            border-right: 6px solid transparent;
+            border-top: 6px solid var(--cream);
+        }
+        
+        @keyframes lobbySpeechPop {
+            0% { opacity: 0; transform: translateX(-50%) translateY(5px) scale(0.8); }
+            10% { opacity: 1; transform: translateX(-50%) translateY(0) scale(1.1); }
+            20% { transform: translateX(-50%) translateY(0) scale(1); }
+            80% { opacity: 1; }
+            100% { opacity: 0; transform: translateX(-50%) translateY(-10px) scale(1); }
+        }
+        
+        /* Lobby hit effect - bounce and flash */
+        .lobby-knight.lobby-hit .knight-image {
+            animation: lobbyHitBounce 0.4s ease-out;
+        }
+        
+        @keyframes lobbyHitBounce {
+            0% { transform: scale(1); filter: brightness(1); }
+            15% { transform: scale(1.2) translateY(-10px); filter: brightness(2) sepia(1) saturate(5) hue-rotate(-20deg); }
+            30% { transform: scale(0.9) translateY(5px); filter: brightness(1.5); }
+            50% { transform: scale(1.1) translateY(-5px); filter: brightness(1.2); }
+            70% { transform: scale(0.95); filter: brightness(1.1); }
+            100% { transform: scale(1); filter: brightness(1); }
+        }
+        
+        /* Lobby projectile */
+        .lobby-projectile {
+            position: absolute;
+            width: 14px;
+            height: 22px;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            z-index: 8;
+            pointer-events: none;
+            image-rendering: pixelated;
+            filter: drop-shadow(0 0 4px rgba(250, 230, 155, 0.6));
+        }
 
         .player-list {
             display: flex;
@@ -834,7 +966,7 @@
             gap: 6px;
         }
 
-        /* Phase 2 Transition Overlay */
+        /* Rage mode Transition Overlay */
         .phase-transition-overlay {
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
@@ -863,8 +995,8 @@
         }
 
         .phase-transition-overlay .phase-title {
-            color: var(--phase2-orange);
-            text-shadow: 6px 6px 0 var(--bg-dark), 0 0 45px var(--phase2-orange);
+            color: var(--rage-orange);
+            text-shadow: 6px 6px 0 var(--bg-dark), 0 0 45px var(--rage-orange);
             animation: phase2TextPulse 0.5s ease-in-out infinite alternate;
         }
 
@@ -953,7 +1085,7 @@
                 <div class="boss-name" id="boss-name">BATSY THE BEAST</div>
                 <div class="boss-health-bar">
                     <div class="boss-health-fill" id="boss-health-fill" style="width: 100%;"></div>
-                    <div class="boss-health-text" id="boss-health-text">500 / 500</div>
+                    <div class="boss-health-text" id="boss-health-text">750 / 750</div>
                 </div>
                 <div class="boss-phase" id="boss-phase">GROUND SLAM</div>
             </div>
@@ -1001,11 +1133,15 @@
 
         <!-- Phase Overlays -->
         <div class="phase-overlay active" id="lobby-overlay">
-            <div class="phase-title">BOSS BATTLE</div>
-            <div class="phase-subtitle">Type <span style="color: var(--rose);">!play</span> in chat to join!</div>
-            <div class="phase-timer" id="lobby-timer">60</div>
-            <div class="phase-instruction">Waiting for players... (Max 25)</div>
-            <div class="player-list" id="lobby-player-list"></div>
+            <div class="lobby-content">
+                <div class="phase-title">BOSS BATTLE</div>
+                <div class="phase-subtitle">Type <span style="color: var(--rose);">!play</span> in chat to join!</div>
+                <div class="phase-timer" id="lobby-timer">60</div>
+                <div class="phase-instruction">Waiting for players... (<span id="lobby-player-count">0</span>/25)</div>
+                <div class="lobby-tip">Try <span style="color: var(--rose);">!attack @player</span> or <span style="color: var(--rose);">!taunt message</span></div>
+            </div>
+            <!-- Lobby arena for knights to roam -->
+            <div class="lobby-player-area" id="lobby-player-area"></div>
         </div>
 
         <div class="phase-overlay" id="boss-intro-overlay">
@@ -1027,17 +1163,16 @@
             <div style="font-size: 20px; color: var(--lavender); margin-top: 5px;">Battle begins in...</div>
         </div>
 
-        <!-- Phase 2 Transition -->
-        <div class="phase-transition-overlay" id="phase2-overlay">
-            <div class="phase-title">PHASE 2</div>
-            <div class="phase-subtitle" style="color: var(--phase2-orange);">BATSY IS ENRAGED!</div>
+        <!-- Rage Warning Overlay -->
+        <div class="phase-transition-overlay" id="rage-overlay">
+            <div class="phase-title" style="color: var(--rage-orange); text-shadow: 6px 6px 0 var(--bg-dark), 0 0 45px var(--rage-orange);">BATSY IS ENRAGED!</div>
         </div>
 
         <!-- Result Screens -->
         <div class="result-screen victory" id="victory-screen">
             <div class="result-title">VICTORY!</div>
             <div class="mvp-section">
-                <div class="mvp-label">★ CHAMPION BATSY SLAYER ★</div>
+                <div class="mvp-label">‧₊˚. CHAMPION BATSY SLAYER .˚₊‧</div>
                 <div class="mvp-name" id="mvp-name">PlayerName</div>
                 <div class="mvp-stats">
                     <div class="mvp-stat">
@@ -1121,19 +1256,20 @@
             lobbyDuration: 60,
             bossIntroDuration: 30,
             
-            // Phase 1 Boss - Slower attacks, more projectiles per attack
-            phase1Health: 500,
-            phase1AttackInterval: 3000,
-            phase1HitChance: 0.5,
-            phase1ProjectilesMin: 5,
-            phase1ProjectilesMax: 9,
+            // Boss Stats (single phase)
+            bossHealth: 750,
+            attackInterval: 3000,
+            hitChance: 0.5,
+            projectilesMin: 5,
+            projectilesMax: 9,
             
-            // Phase 2 Boss
-            phase2Health: 250,
-            phase2AttackInterval: 400,
-            phase2HitChance: 0.65,
-            phase2ProjectilesMin: 3,
-            phase2ProjectilesMax: 6,
+            // Rage Attack Config (triggers randomly every 5-7 slams)
+            rageSlamMin: 5,
+            rageSlamMax: 7,
+            rageProjectilesMin: 10,
+            rageProjectilesMax: 14,
+            rageHitChance: 0.65,
+            rageDamageMultiplier: 1.25,
             
             bossBaseDamage: 12,
             
@@ -1153,8 +1289,8 @@
             
             playerHitboxWidth: 51,
             playerHitboxHeight: 61,
-            phase1ProjectileSize: 24,
-            phase2ProjectileSize: 32,
+            projectileSize: 24,
+            rageProjectileSize: 32,
             
             // Bow weapon stats
             bowDamage: 10,
@@ -1192,18 +1328,28 @@
 
         let gameState = {
             phase: 'idle',
-            bossPhase: 1,
             players: {},
-            boss: { health: CONFIG.phase1Health, maxHealth: CONFIG.phase1Health },
+            lobbyPlayers: {},
+            boss: { health: CONFIG.bossHealth, maxHealth: CONFIG.bossHealth },
             totalDamage: 0,
             gameStartTime: null,
             timers: {},
             moveInterval: null,
+            lobbyMoveInterval: null,
             activeProjectiles: [],
             animationFrame: 1,
             animationInterval: null,
-            attackCount: 0
+            lobbyAnimationFrame: 1,
+            lobbyAnimationInterval: null,
+            slamCount: 0,
+            nextRageSlam: 0,
+            isRageAttack: false
         };
+        
+        // Calculate next rage slam (random between min-max slams)
+        function calculateNextRageSlam() {
+            return CONFIG.rageSlamMin + Math.floor(Math.random() * (CONFIG.rageSlamMax - CONFIG.rageSlamMin + 1));
+        }
 
         // Audio
         const AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -1380,19 +1526,51 @@
                     setTimeout(() => createTone(100, 0.3, 'sawtooth', 0.12, 30), 300);
                     break;
                     
-                case 'phase2':
-                    // Epic phase transition - dramatic warning
+                case 'rage':
+                    // Epic rage attack warning - dramatic warning
                     for (let i = 0; i < 4; i++) {
                         setTimeout(() => {
                             createTone(80 + i * 20, 0.25, 'sawtooth', 0.3 - i * 0.05, 40);
                             createTone(160 + i * 40, 0.2, 'square', 0.2 - i * 0.03, 80);
-                        }, i * 180);
+                        }, i * 100);
                     }
                     // Final impact
                     setTimeout(() => {
                         createTone(50, 0.4, 'sawtooth', 0.35, 25);
                         createTone(100, 0.3, 'square', 0.25, 50);
-                    }, 720);
+                    }, 400);
+                    break;
+                    
+                case 'roar':
+                    // Beast roar - deep guttural growl that swells
+                    // Core rumbling growl (sustained low frequency)
+                    createTone(45, 0.9, 'sawtooth', 0.35, 30);
+                    createTone(60, 0.85, 'sawtooth', 0.3, 35);
+                    createTone(90, 0.8, 'square', 0.2, 50);
+                    
+                    // Growl modulation - adds texture
+                    setTimeout(() => {
+                        createTone(50, 0.6, 'sawtooth', 0.28, 40);
+                        createTone(75, 0.5, 'square', 0.18, 55);
+                    }, 150);
+                    
+                    // Swell in the middle
+                    setTimeout(() => {
+                        createTone(55, 0.5, 'sawtooth', 0.32, 35);
+                        createTone(80, 0.45, 'sawtooth', 0.25, 45);
+                        createTone(110, 0.4, 'square', 0.15, 70);
+                    }, 350);
+                    
+                    // Peak growl
+                    setTimeout(() => {
+                        createTone(50, 0.4, 'sawtooth', 0.3, 30);
+                        createTone(70, 0.35, 'sawtooth', 0.25, 40);
+                    }, 600);
+                    
+                    // Tail off
+                    setTimeout(() => {
+                        createTone(40, 0.3, 'sawtooth', 0.2, 25);
+                    }, 800);
                     break;
                     
                 case 'victory':
@@ -1427,9 +1605,10 @@
             bossImage: document.getElementById('boss-image'),
             lobbyOverlay: document.getElementById('lobby-overlay'),
             lobbyTimer: document.getElementById('lobby-timer'),
-            lobbyPlayerList: document.getElementById('lobby-player-list'),
+            lobbyPlayerArea: document.getElementById('lobby-player-area'),
+            lobbyPlayerCount: document.getElementById('lobby-player-count'),
             bossIntroOverlay: document.getElementById('boss-intro-overlay'),
-            phase2Overlay: document.getElementById('phase2-overlay'),
+            rageOverlay: document.getElementById('rage-overlay'),
             victoryScreen: document.getElementById('victory-screen'),
             defeatScreen: document.getElementById('defeat-screen'),
             battleLog: document.getElementById('battle-log'),
@@ -1462,7 +1641,11 @@
 
         function handleCommand(username, message, isMod = false) {
             switch (gameState.phase) {
-                case 'lobby': if (message === '!play') joinGame(username); break;
+                case 'lobby':
+                    if (message === '!play') joinGame(username);
+                    else if (message.startsWith('!attack @')) lobbyAttack(username, message);
+                    else if (message.startsWith('!taunt ')) lobbyTaunt(username, message);
+                    break;
                 case 'battle':
                     if (message === '!attack') playerAttack(username);
                     else if (message.startsWith('!heal')) playerHeal(username, message.split(' ')[1]);
@@ -1525,21 +1708,33 @@
         function stopPlayerMovement() {
             if (gameState.moveInterval) { clearInterval(gameState.moveInterval); gameState.moveInterval = null; }
         }
+        
+        function stopLobbyMovement() {
+            if (gameState.lobbyMoveInterval) { clearInterval(gameState.lobbyMoveInterval); gameState.lobbyMoveInterval = null; }
+        }
 
         function startLobby() {
             if (gameState.phase !== 'idle') return;
             initAudio();
             gameState.phase = 'lobby';
-            gameState.bossPhase = 1;
             gameState.players = {};
+            gameState.lobbyPlayers = {}; // Separate lobby player data
             gameState.totalDamage = 0;
             gameState.activeProjectiles = [];
-            elements.game.classList.remove('phase2');
+            gameState.slamCount = 0;
+            gameState.nextRageSlam = calculateNextRageSlam();
+            gameState.isRageAttack = false;
+            elements.game.classList.remove('rage-mode');
             resetBoss();
             updateUI();
             
             elements.lobbyOverlay.classList.add('active');
-            elements.lobbyPlayerList.innerHTML = '';
+            elements.lobbyPlayerArea.innerHTML = '';
+            elements.lobbyPlayerCount.textContent = '0';
+            
+            // Start lobby knight animation
+            startLobbyAnimation();
+            startLobbyMovement();
             
             let timeLeft = CONFIG.lobbyDuration;
             elements.lobbyTimer.textContent = timeLeft;
@@ -1558,6 +1753,13 @@
 
         function startBossIntro() {
             gameState.phase = 'intro';
+            
+            // Clean up lobby systems
+            stopLobbyMovement();
+            stopLobbyAnimation();
+            elements.lobbyPlayerArea.innerHTML = '';
+            gameState.lobbyPlayers = {};
+            
             elements.lobbyOverlay.classList.remove('active');
             elements.bossIntroOverlay.classList.add('active');
             renderPlayers();
@@ -1585,48 +1787,17 @@
         function startBattle() {
             gameState.phase = 'battle';
             gameState.gameStartTime = Date.now();
-            gameState.attackCount = 0;  // Reset attack counter for side rain
+            gameState.slamCount = 0;
+            gameState.nextRageSlam = calculateNextRageSlam();
             elements.commandHints.style.display = 'flex';
             startPlayerMovement();
             document.querySelectorAll('.player-sprite-container').forEach(el => el.classList.add('walking'));
             startPlayerAnimation();
             
-            gameState.timers.bossAttack = setInterval(bossAttack, CONFIG.phase1AttackInterval);
+            gameState.timers.bossAttack = setInterval(bossAttack, CONFIG.attackInterval);
             gameState.timers.gameTimer = setInterval(updateGameTimer, 1000);
             
             addBattleLog('System', 'BATTLE START!', 'system');
-        }
-
-        function transitionToPhase2() {
-            gameState.bossPhase = 2;
-            
-            // Clear current attack timer
-            clearInterval(gameState.timers.bossAttack);
-            
-            // Show phase 2 transition
-            elements.phase2Overlay.classList.add('active');
-            elements.game.classList.add('phase2');
-            elements.game.classList.add('shaking');
-            
-            playSound('phase2');
-            
-            // Update boss health to phase 2
-            gameState.boss.health = CONFIG.phase2Health;
-            gameState.boss.maxHealth = CONFIG.phase2Health;
-            updateBossHealth();
-            elements.bossPhase.textContent = 'SLAM FRENZY';
-            
-            addBattleLog('BATSY', 'ENTERS PHASE 2!', 'boss');
-            
-            setTimeout(() => {
-                elements.game.classList.remove('shaking');
-            }, 500);
-            
-            setTimeout(() => {
-                elements.phase2Overlay.classList.remove('active');
-                // Start phase 2 attacks (faster)
-                gameState.timers.bossAttack = setInterval(bossAttack, CONFIG.phase2AttackInterval);
-            }, 1500);
         }
 
         function endGame(result) {
@@ -1634,9 +1805,13 @@
             Object.values(gameState.timers).forEach(t => clearInterval(t));
             gameState.timers = {};
             stopPlayerMovement();
+            stopLobbyMovement();
+            stopLobbyAnimation();
             
-            ['lobbyOverlay', 'bossIntroOverlay', 'phase2Overlay'].forEach(o => elements[o].classList.remove('active'));
+            ['lobbyOverlay', 'bossIntroOverlay', 'rageOverlay'].forEach(o => elements[o].classList.remove('active'));
+            elements.game.classList.remove('rage-mode');
             elements.commandHints.style.display = 'none';
+            elements.lobbyPlayerArea.innerHTML = '';
             document.querySelectorAll('.player-sprite-container').forEach(el => el.classList.remove('walking'));
             stopPlayerAnimation();
             
@@ -1647,6 +1822,11 @@
         function joinGame(username) {
             if (gameState.players[username] || Object.keys(gameState.players).length >= CONFIG.maxPlayers) return;
             
+            // Random spawn position for lobby (full screen, no restrictions)
+            const lobbyX = 100 + Math.random() * 1720;
+            const lobbyY = 200 + Math.random() * 700;
+            
+            // Create battle player data (for when battle starts)
             gameState.players[username] = {
                 username,
                 health: CONFIG.playerMaxHealth,
@@ -1663,13 +1843,217 @@
                 direction: Math.random() * Math.PI * 2
             };
             
-            const item = document.createElement('div');
-            item.className = 'player-list-item';
-            item.innerHTML = `${username}`;
-            elements.lobbyPlayerList.appendChild(item);
+            // Create lobby player data (for lobby movement)
+            gameState.lobbyPlayers[username] = {
+                username,
+                x: lobbyX,
+                y: lobbyY,
+                direction: Math.random() * Math.PI * 2
+            };
+            
+            // Spawn lobby knight
+            spawnLobbyKnight(username);
+            
+            // Update player count
+            elements.lobbyPlayerCount.textContent = Object.keys(gameState.players).length;
             
             updateUI();
             addBattleLog(username, 'joined the battle!', 'join');
+        }
+        
+        function spawnLobbyKnight(username) {
+            const lobbyPlayer = gameState.lobbyPlayers[username];
+            if (!lobbyPlayer) return;
+            
+            const knight = document.createElement('div');
+            knight.className = 'lobby-knight';
+            knight.dataset.lobbyUsername = username;
+            knight.style.left = lobbyPlayer.x + 'px';
+            knight.style.top = lobbyPlayer.y + 'px';
+            
+            const frame = gameState.lobbyAnimationFrame || 1;
+            const knightSrc = KNIGHT_FRAMES[frame] || KNIGHT_FRAMES[1];
+            
+            knight.innerHTML = `
+                <img class="knight-image" src="${knightSrc}" alt="Knight">
+                <div class="lobby-player-name">${username}</div>
+            `;
+            
+            elements.lobbyPlayerArea.appendChild(knight);
+        }
+        
+        function startLobbyAnimation() {
+            if (gameState.lobbyAnimationInterval) return;
+            gameState.lobbyAnimationFrame = 1;
+            gameState.lobbyAnimationInterval = setInterval(() => {
+                gameState.lobbyAnimationFrame = (gameState.lobbyAnimationFrame % 5) + 1;
+                updateLobbyKnightFrames();
+            }, 120);
+        }
+        
+        function stopLobbyAnimation() {
+            if (gameState.lobbyAnimationInterval) {
+                clearInterval(gameState.lobbyAnimationInterval);
+                gameState.lobbyAnimationInterval = null;
+            }
+        }
+        
+        function updateLobbyKnightFrames() {
+            document.querySelectorAll('.lobby-knight').forEach(el => {
+                const frame = gameState.lobbyAnimationFrame || 1;
+                const knightImg = el.querySelector('.knight-image');
+                if (knightImg && KNIGHT_FRAMES[frame]) knightImg.src = KNIGHT_FRAMES[frame];
+            });
+        }
+        
+        function startLobbyMovement() {
+            if (gameState.lobbyMoveInterval) clearInterval(gameState.lobbyMoveInterval);
+            gameState.lobbyMoveInterval = setInterval(() => {
+                Object.values(gameState.lobbyPlayers).forEach(player => {
+                    // Random direction changes
+                    if (Math.random() < 0.04) player.direction = Math.random() * Math.PI * 2;
+                    if (Math.random() < 0.02) player.direction += Math.PI;
+                    
+                    let newX = player.x + Math.cos(player.direction) * CONFIG.playerMoveSpeed;
+                    let newY = player.y + Math.sin(player.direction) * CONFIG.playerMoveSpeed;
+                    
+                    // Bounce off screen edges (full lobby area)
+                    const margin = 50;
+                    if (newX < margin || newX > 1870) {
+                        player.direction = Math.PI - player.direction + (Math.random() - 0.5) * 0.5;
+                        newX = Math.max(margin, Math.min(1870, newX));
+                    }
+                    if (newY < 150 || newY > 950) {
+                        player.direction = -player.direction + (Math.random() - 0.5) * 0.5;
+                        newY = Math.max(150, Math.min(950, newY));
+                    }
+                    
+                    player.x = newX;
+                    player.y = newY;
+                    
+                    const el = document.querySelector(`[data-lobby-username="${player.username}"]`);
+                    if (el) {
+                        el.style.left = player.x + 'px';
+                        el.style.top = player.y + 'px';
+                        const img = el.querySelector('.knight-image');
+                        const arm = el.querySelector('.player-arm-img');
+                        const flipTransform = Math.cos(player.direction) < 0 ? 'scaleX(-1)' : 'scaleX(1)';
+                        if (img) img.style.transform = flipTransform;
+                        if (arm) arm.style.transform = flipTransform;
+                    }
+                });
+            }, CONFIG.playerMoveInterval);
+        }
+        
+        function lobbyAttack(attackerName, message) {
+            const attacker = gameState.lobbyPlayers[attackerName];
+            if (!attacker) return;
+            
+            // Parse target name from "!attack @targetname"
+            const targetName = message.substring(9).trim(); // Remove "!attack @"
+            const target = Object.values(gameState.lobbyPlayers).find(
+                p => p.username.toLowerCase() === targetName.toLowerCase()
+            );
+            
+            if (!target || target.username === attackerName) return;
+            
+            initAudio();
+            playSound('attack');
+            
+            // Launch arrow from attacker to target
+            launchLobbyProjectile(attacker, target);
+        }
+        
+        function launchLobbyProjectile(attacker, target) {
+            const projectile = document.createElement('div');
+            projectile.className = 'lobby-projectile';
+            projectile.style.backgroundImage = `url(${PROJECTILE_IMAGES.bow})`;
+            
+            const startX = attacker.x + 30;
+            const startY = attacker.y + 30;
+            const endX = target.x + 30;
+            const endY = target.y + 30;
+            
+            // Calculate angle for arrow rotation
+            const dx = endX - startX;
+            const dy = endY - startY;
+            const angle = Math.atan2(dy, dx) * (180 / Math.PI) + 90;
+            projectile.style.transform = `rotate(${angle}deg)`;
+            
+            projectile.style.left = startX + 'px';
+            projectile.style.top = startY + 'px';
+            
+            elements.lobbyPlayerArea.appendChild(projectile);
+            
+            const duration = 400;
+            const startTime = Date.now();
+            
+            function animate() {
+                const elapsed = Date.now() - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                const ease = 1 - Math.pow(1 - progress, 2);
+                
+                // Get current target position (they might have moved)
+                const currentTarget = gameState.lobbyPlayers[target.username];
+                const currentEndX = currentTarget ? currentTarget.x + 30 : endX;
+                const currentEndY = currentTarget ? currentTarget.y + 30 : endY;
+                
+                const currentX = startX + (currentEndX - startX) * ease;
+                const currentY = startY + (currentEndY - startY) * ease;
+                
+                projectile.style.left = currentX + 'px';
+                projectile.style.top = currentY + 'px';
+                
+                // Update rotation as target moves
+                const newDx = currentEndX - currentX;
+                const newDy = currentEndY - currentY;
+                const newAngle = Math.atan2(newDy, newDx) * (180 / Math.PI) + 90;
+                projectile.style.transform = `rotate(${newAngle}deg)`;
+                
+                if (progress < 1) {
+                    requestAnimationFrame(animate);
+                } else {
+                    projectile.remove();
+                    
+                    // Apply hit effect on target
+                    lobbyHitEffect(target.username);
+                }
+            }
+            
+            requestAnimationFrame(animate);
+        }
+        
+        function lobbyHitEffect(username) {
+            const el = document.querySelector(`[data-lobby-username="${username}"]`);
+            if (!el) return;
+            
+            // Add hit class for bounce and flash
+            el.classList.add('lobby-hit');
+            setTimeout(() => el.classList.remove('lobby-hit'), 400);
+        }
+        
+        function lobbyTaunt(username, message) {
+            const player = gameState.lobbyPlayers[username];
+            if (!player) return;
+            
+            // Extract taunt message (after "!taunt ")
+            const tauntText = message.substring(7).trim();
+            if (tauntText.length === 0 || tauntText.length > 18) return; // Must be 1-18 chars
+            
+            const el = document.querySelector(`[data-lobby-username="${username}"]`);
+            if (!el) return;
+            
+            // Remove any existing bubble
+            const existing = el.querySelector('.lobby-speech-bubble');
+            if (existing) existing.remove();
+            
+            const bubble = document.createElement('div');
+            bubble.className = 'lobby-speech-bubble';
+            bubble.textContent = tauntText;
+            el.appendChild(bubble);
+            
+            // Remove after animation
+            setTimeout(() => bubble.remove(), 2500);
         }
 
         function getDistanceMultiplier(player) {
@@ -1760,13 +2144,9 @@
                     updateBossHealth();
                     updateUI();
                     
-                    // Check phase transition or victory
+                    // Check victory
                     if (gameState.boss.health <= 0) {
-                        if (gameState.bossPhase === 1) {
-                            transitionToPhase2();
-                        } else {
-                            endGame('victory');
-                        }
+                        endGame('victory');
                     }
                 }
             }
@@ -1862,8 +2242,7 @@
         }
         
         function resetBoss() {
-            gameState.bossPhase = 1;
-            gameState.boss = { health: CONFIG.phase1Health, maxHealth: CONFIG.phase1Health };
+            gameState.boss = { health: CONFIG.bossHealth, maxHealth: CONFIG.bossHealth };
             updateBossHealth();
             elements.bossPhase.textContent = 'GROUND SLAM';
         }
@@ -1871,105 +2250,160 @@
         function bossAttack() {
             if (gameState.phase !== 'battle') return;
             
+            // Don't start a new attack if rage attack is in progress
+            if (gameState.isRageAttack) return;
+            
             const alive = Object.values(gameState.players).filter(p => p.alive);
             if (alive.length === 0) { endGame('defeat'); return; }
             
             initAudio();
             
-            // Increment attack counter
-            gameState.attackCount++;
+            // Increment slam counter
+            gameState.slamCount++;
             
-            const isPhase2 = gameState.bossPhase === 2;
-            const minProj = isPhase2 ? CONFIG.phase2ProjectilesMin : CONFIG.phase1ProjectilesMin;
-            const maxProj = isPhase2 ? CONFIG.phase2ProjectilesMax : CONFIG.phase1ProjectilesMax;
-            const hitChance = isPhase2 ? CONFIG.phase2HitChance : CONFIG.phase1HitChance;
+            // Check if this is a rage attack
+            const isRageAttack = gameState.slamCount >= gameState.nextRageSlam;
+            gameState.isRageAttack = isRageAttack;
             
-            // Check if this is a side rain attack (every other attack)
-            const shouldSideRain = gameState.attackCount % 2 === 0;
+            // Set attack parameters based on rage status
+            const minProj = isRageAttack ? CONFIG.rageProjectilesMin : CONFIG.projectilesMin;
+            const maxProj = isRageAttack ? CONFIG.rageProjectilesMax : CONFIG.projectilesMax;
+            const hitChance = isRageAttack ? CONFIG.rageHitChance : CONFIG.hitChance;
+            
+            // Side rain on every other normal attack
+            const shouldSideRain = gameState.slamCount % 2 === 0;
             
             // Randomized number of projectiles
             const numProjectiles = minProj + Math.floor(Math.random() * (maxProj - minProj + 1));
             
-            // Animation
-            if (isPhase2) {
-                // Phase 2: Faster 3-frame animation cycle (fits within 400ms attack interval)
-                // Frame 1: Pre-Slam wind-up
+            if (isRageAttack) {
+                // RAGE ATTACK - 3 consecutive slams with 1 second roar warning!
+                gameState.isRageAttack = true; // Set flag immediately to prevent overlapping attacks
+                elements.game.classList.add('rage-mode');
+                elements.rageOverlay.classList.add('active');
+                elements.bossPhase.textContent = 'RAGE ATTACK!';
+                
+                addBattleLog('BATSY', 'is ENRAGED!', 'boss');
+                
+                // === ROAR WARNING PHASE (1 second) ===
+                // Batsy enters pre-slam pose and roars
                 setBossFrame('preslam');
-                elements.bossSprite.classList.add('frenzied');
+                playSound('roar');
                 
-                // Frame 2: Slam impact (100ms later) - projectiles launch here
+                // Screen shake during roar
+                elements.game.classList.add('shaking');
+                setTimeout(() => elements.game.classList.remove('shaking'), 800);
+                
+                // Hide the "RAGE ATTACK!" overlay after 500ms (50% shorter display)
                 setTimeout(() => {
-                    setBossFrame('slam');
-                    playSound('frenzy');
-                    // Screen shake on phase 2
-                    if (Math.random() < 0.3) {
-                        elements.game.classList.add('shaking');
-                        setTimeout(() => elements.game.classList.remove('shaking'), 200);
-                    }
-                    // Launch projectiles on slam impact
-                    for (let i = 0; i < numProjectiles; i++) {
-                        const delay = i * (30 + Math.random() * 50);
-                        setTimeout(() => {
-                            if (gameState.phase === 'battle') {
-                                launchBossProjectile(hitChance, isPhase2);
-                            }
-                        }, delay);
-                    }
-                    // Launch side rain on every other attack
-                    if (shouldSideRain && gameState.phase === 'battle') {
-                        const sideRainCount = 1 + Math.floor(Math.random() * 3); // 1-3 per side (reduced 50%)
-                        for (let i = 0; i < sideRainCount; i++) {
-                            const delay = i * (80 + Math.random() * 60);
-                            setTimeout(() => {
-                                if (gameState.phase === 'battle') {
-                                    launchSideRainProjectile('left', hitChance, isPhase2);
-                                    launchSideRainProjectile('right', hitChance, isPhase2);
-                                }
-                            }, delay);
-                        }
-                    }
-                }, 100);
+                    elements.rageOverlay.classList.remove('active');
+                }, 500);
                 
-                // Frame 3: Return to static (300ms total)
+                // Roar duration before slams begin
+                const roarDuration = 1000;
+                
+                // 3 consecutive rage slams (after roar)
+                const slamInterval = 600; // Time between each slam
+                
+                for (let slam = 0; slam < 3; slam++) {
+                    setTimeout(() => {
+                        if (gameState.phase !== 'battle') return;
+                        
+                        // Slam animation
+                        setBossFrame('preslam');
+                        elements.bossSprite.classList.add('frenzied');
+                        
+                        setTimeout(() => {
+                            if (gameState.phase !== 'battle') return;
+                            setBossFrame('slam');
+                            playSound('slam');
+                            
+                            // Screen shake on each slam
+                            elements.game.classList.add('shaking');
+                            setTimeout(() => elements.game.classList.remove('shaking'), 200);
+                            
+                            // Launch rage projectiles
+                            const projCount = CONFIG.rageProjectilesMin + Math.floor(Math.random() * (CONFIG.rageProjectilesMax - CONFIG.rageProjectilesMin + 1));
+                            for (let i = 0; i < projCount; i++) {
+                                const delay = i * (30 + Math.random() * 50);
+                                setTimeout(() => {
+                                    if (gameState.phase === 'battle') {
+                                        launchBossProjectile(hitChance, true);
+                                    }
+                                }, delay);
+                            }
+                            
+                            // Side rain on each slam
+                            const sideRainCount = 2 + Math.floor(Math.random() * 2);
+                            for (let i = 0; i < sideRainCount; i++) {
+                                const delay = i * (60 + Math.random() * 40);
+                                setTimeout(() => {
+                                    if (gameState.phase === 'battle') {
+                                        launchSideRainProjectile('left', hitChance, true);
+                                        launchSideRainProjectile('right', hitChance, true);
+                                    }
+                                }, delay);
+                            }
+                        }, 150);
+                        
+                        // Return to static briefly between slams
+                        setTimeout(() => {
+                            setBossFrame('static');
+                            elements.bossSprite.classList.remove('frenzied');
+                        }, 400);
+                        
+                    }, roarDuration + (slam * slamInterval));
+                }
+                
+                // End rage mode after roar + all 3 slams
                 setTimeout(() => {
                     setBossFrame('static');
                     elements.bossSprite.classList.remove('frenzied');
-                }, 300);
+                    elements.game.classList.remove('rage-mode');
+                    elements.rageOverlay.classList.remove('active');
+                    elements.bossPhase.textContent = 'GROUND SLAM';
+                    
+                    // Reset slam counter and calculate next rage
+                    gameState.slamCount = 0;
+                    gameState.nextRageSlam = calculateNextRageSlam();
+                    gameState.isRageAttack = false;
+                    
+                    addBattleLog('BATSY', 'calms down...', 'boss');
+                }, roarDuration + (3 * slamInterval) + 200);
+                
             } else {
-                // Phase 1: 3-frame animation cycle
-                // Frame 1: Pre-Slam wind-up
+                // Normal slam attack
                 setBossFrame('preslam');
                 elements.bossSprite.classList.add('slamming');
                 
-                // Frame 2: Slam impact (300ms later) - projectiles launch here
                 setTimeout(() => {
                     setBossFrame('slam');
                     playSound('slam');
-                    // Launch projectiles on slam impact
+                    
                     for (let i = 0; i < numProjectiles; i++) {
                         const delay = i * (50 + Math.random() * 100);
                         setTimeout(() => {
                             if (gameState.phase === 'battle') {
-                                launchBossProjectile(hitChance, isPhase2);
+                                launchBossProjectile(hitChance, false);
                             }
                         }, delay);
                     }
-                    // Launch side rain on every other attack
+                    
+                    // Side rain on every other attack
                     if (shouldSideRain && gameState.phase === 'battle') {
-                        const sideRainCount = 3 + Math.floor(Math.random() * 3); // 3-5 per side (increased 50%)
+                        const sideRainCount = 3 + Math.floor(Math.random() * 3);
                         for (let i = 0; i < sideRainCount; i++) {
                             const delay = i * (150 + Math.random() * 100);
                             setTimeout(() => {
                                 if (gameState.phase === 'battle') {
-                                    launchSideRainProjectile('left', hitChance, isPhase2);
-                                    launchSideRainProjectile('right', hitChance, isPhase2);
+                                    launchSideRainProjectile('left', hitChance, false);
+                                    launchSideRainProjectile('right', hitChance, false);
                                 }
                             }, delay);
                         }
                     }
                 }, 300);
                 
-                // Frame 3: Return to static (800ms total)
                 setTimeout(() => {
                     setBossFrame('static');
                     elements.bossSprite.classList.remove('slamming');
@@ -1977,9 +2411,9 @@
             }
         }
 
-        function launchBossProjectile(hitChance, isPhase2) {
+        function launchBossProjectile(hitChance, isRage) {
             const projectile = document.createElement('div');
-            projectile.className = 'boss-projectile' + (isPhase2 ? ' phase2' : '');
+            projectile.className = 'boss-projectile' + (isRage ? ' rage' : '');
             
             // Randomly choose between large and small projectile images
             const projImage = Math.random() < 0.5 ? PROJECTILE_IMAGES.bossLarge : PROJECTILE_IMAGES.bossSmall;
@@ -1995,7 +2429,7 @@
             const angle = baseAngle + spreadAngle;
             
             // Randomized speed
-            const baseSpeed = isPhase2 ? 6.5 : 5;
+            const baseSpeed = isRage ? 6.5 : 5;
             const speed = baseSpeed + Math.random() * 3.5;
             
             // Calculate velocity - proper trigonometry for full spread
@@ -2019,7 +2453,7 @@
             const actualHitChance = hitChance + (Math.random() - 0.5) * 0.2; // 40-60% variance
             const willHit = Math.random() < actualHitChance;
             
-            const projectileData = { element: projectile, x, y, vx, vy, willHit, hasHit: false, isPhase2 };
+            const projectileData = { element: projectile, x, y, vx, vy, willHit, hasHit: false, isRage };
             gameState.activeProjectiles.push(projectileData);
             
             function animate() {
@@ -2030,7 +2464,7 @@
                 projectileData.vy += 0.18; // Gravity
                 
                 // Add slight wobble for phase 2
-                if (projectileData.isPhase2) {
+                if (projectileData.isRage) {
                     projectileData.x += Math.sin(projectileData.y * 0.05) * 0.5;
                 }
                 
@@ -2048,7 +2482,7 @@
                         const py = CONFIG.playerAreaTop + player.y;
                         
                         // Use actual projectile size for collision
-                        const projSize = projectileData.isPhase2 ? CONFIG.phase2ProjectileSize : CONFIG.phase1ProjectileSize;
+                        const projSize = projectileData.isRage ? CONFIG.rageProjectileSize : CONFIG.projectileSize;
                         
                         if (projectileData.x > px - projSize &&
                             projectileData.x < px + CONFIG.playerHitboxWidth &&
@@ -2059,7 +2493,7 @@
                             projectile.remove();
                             
                             const impact = document.createElement('div');
-                            impact.className = 'impact' + (projectileData.isPhase2 ? ' phase2' : '');
+                            impact.className = 'impact' + (projectileData.isRage ? ' phase2' : '');
                             impact.style.left = (projectileData.x - 20) + 'px';
                             impact.style.top = projectileData.y + 'px';
                             elements.projectilesContainer.appendChild(impact);
@@ -2067,7 +2501,7 @@
                             
                             const mult = getDistanceMultiplier(player);
                             let dmg = Math.floor(CONFIG.bossBaseDamage * mult * (0.7 + Math.random() * 0.6));
-                            if (projectileData.isPhase2) dmg = Math.floor(dmg * 1.25);
+                            if (projectileData.isRage) dmg = Math.floor(dmg * 1.25);
                             
                             player.health -= dmg;
                             playSound('hit');
@@ -2126,9 +2560,9 @@
         }
 
         // Side rain projectiles - fall from top on left/right 25% of screen
-        function launchSideRainProjectile(side, hitChance, isPhase2) {
+        function launchSideRainProjectile(side, hitChance, isRage) {
             const projectile = document.createElement('div');
-            projectile.className = 'rain-projectile' + (isPhase2 ? ' phase2' : '');
+            projectile.className = 'rain-projectile' + (isRage ? ' rage' : '');
             
             // Randomly choose between large and small
             const rockImage = Math.random() < 0.5 
@@ -2156,7 +2590,7 @@
             let y = -30;
             
             // Fall straight down with some speed variation (20% faster)
-            const baseSpeed = isPhase2 ? 6 : 4.8;
+            const baseSpeed = isRage ? 6 : 4.8;
             const vy = baseSpeed + Math.random() * 2.4;
             const vx = (Math.random() - 0.5) * 0.5; // Very slight horizontal drift
             
@@ -2168,7 +2602,7 @@
             const actualHitChance = hitChance + (Math.random() - 0.5) * 0.2;
             const willHit = Math.random() < actualHitChance;
             
-            const projectileData = { element: projectile, x, y, vx, vy, willHit, hasHit: false, isPhase2, isSideRain: true };
+            const projectileData = { element: projectile, x, y, vx, vy, willHit, hasHit: false, isRage, isSideRain: true };
             gameState.activeProjectiles.push(projectileData);
             
             function animate() {
@@ -2189,7 +2623,7 @@
                         
                         const px = CONFIG.playerAreaOffsetX + player.x;
                         const py = CONFIG.playerAreaOffsetY + player.y;
-                        const projSize = projectileData.isPhase2 ? CONFIG.phase2ProjectileSize : CONFIG.phase1ProjectileSize;
+                        const projSize = projectileData.isRage ? CONFIG.rageProjectileSize : CONFIG.projectileSize;
                         
                         if (projectileData.x > px - projSize &&
                             projectileData.x < px + CONFIG.playerHitboxWidth &&
@@ -2200,7 +2634,7 @@
                             projectile.remove();
                             
                             const impact = document.createElement('div');
-                            impact.className = 'impact' + (projectileData.isPhase2 ? ' phase2' : '');
+                            impact.className = 'impact' + (projectileData.isRage ? ' phase2' : '');
                             impact.style.left = (projectileData.x - 20) + 'px';
                             impact.style.top = projectileData.y + 'px';
                             elements.projectilesContainer.appendChild(impact);
@@ -2208,7 +2642,7 @@
                             
                             const mult = getDistanceMultiplier(player);
                             let dmg = Math.floor(CONFIG.bossBaseDamage * mult * (0.7 + Math.random() * 0.6));
-                            if (projectileData.isPhase2) dmg = Math.floor(dmg * 1.25);
+                            if (projectileData.isRage) dmg = Math.floor(dmg * 1.25);
                             
                             player.health -= dmg;
                             playSound('hit');
@@ -2397,7 +2831,7 @@
             const entry = document.createElement('div');
             entry.className = 'battle-log-entry';
             let color = 'var(--rose)';
-            if (type === 'boss') color = 'var(--phase2-orange)';
+            if (type === 'boss') color = 'var(--rage-orange)';
             else if (type === 'system') color = 'var(--lavender)';
             else if (type === 'attack') color = 'var(--gold)';
             else if (type === 'heal') color = 'var(--health-green)';
@@ -2450,19 +2884,19 @@
             if (e.key === '3') handleCommand('Player3', '!play');
             if (e.key === '4') handleCommand('Player4', '!play');
             if (e.key === '5') handleCommand('Player5', '!play');
-            if (e.key === 'a') handleCommand('Player1', '!attack');
-            if (e.key === 's') handleCommand('Player2', '!attack');
-            if (e.key === 'd') handleCommand('Player3', '!attack');
-            if (e.key === 'f') handleCommand('Player4', '!attack');
-            if (e.key === 'g') handleCommand('Player5', '!attack');
+            // In lobby: attack other players. In battle: attack boss
+            if (e.key === 'a') handleCommand('Player1', gameState.phase === 'lobby' ? '!attack @Player2' : '!attack');
+            if (e.key === 's') handleCommand('Player2', gameState.phase === 'lobby' ? '!attack @Player1' : '!attack');
+            if (e.key === 'd') handleCommand('Player3', gameState.phase === 'lobby' ? '!attack @Player1' : '!attack');
+            if (e.key === 'f') handleCommand('Player4', gameState.phase === 'lobby' ? '!attack @Player2' : '!attack');
+            if (e.key === 'g') handleCommand('Player5', gameState.phase === 'lobby' ? '!attack @Player3' : '!attack');
             if (e.key === 'h') handleCommand('Player1', '!heal');
             if (e.key === 'r') handleCommand('Player1', '!shield');
             if (e.key === 't') handleCommand('Player1', '!taunt You smell bad!');
         });
 
         console.log('GeoRose Boss Battle v5 - Batsy The Beast');
-        console.log('ENTER=start, 1-5=join, A/S/D/F/G=attack, H=heal, R=shield, T=taunt');*/
+        console.log('ENTER=start, 1-5=join, A/S/D/F/G=attack (lobby: shoots other players), H=heal, R=shield, T=taunt');*/
     </script>
 </body>
 </html>
-
