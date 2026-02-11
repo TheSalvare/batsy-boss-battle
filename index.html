@@ -306,6 +306,40 @@
             50% { filter: brightness(2.5) hue-rotate(30deg) drop-shadow(0 5px 20px rgba(255,255,255,0.5)); }
         }
 
+        /* Boss death sequence */
+        .boss-sprite.death-shake .boss-image {
+            animation: bossDeathShake 0.8s ease !important;
+        }
+
+        @keyframes bossDeathShake {
+            0% { transform: translateX(0) scale(1); filter: brightness(1); }
+            10% { transform: translateX(-12px) scale(1.05); filter: brightness(2); }
+            20% { transform: translateX(12px) scale(1.05); filter: brightness(1.5); }
+            30% { transform: translateX(-8px) scale(1.03); filter: brightness(2.5); }
+            40% { transform: translateX(8px) scale(1.03); filter: brightness(1.5); }
+            50% { transform: translateX(-5px) scale(1.02); filter: brightness(2); }
+            60% { transform: translateX(5px) scale(1.02); filter: brightness(1.5); }
+            70% { transform: translateX(-3px) scale(1.01); filter: brightness(1.8); }
+            80% { transform: translateX(3px) scale(1); filter: brightness(1.3); }
+            90% { transform: translateX(-1px) scale(1); filter: brightness(1.1); }
+            100% { transform: translateX(0) scale(1); filter: brightness(1); }
+        }
+
+        .boss-sprite.death-collapse .boss-image {
+            animation: bossDeathCollapse 1s ease-in forwards !important;
+        }
+
+        @keyframes bossDeathCollapse {
+            0% { transform: translateY(0) scale(1) rotate(0deg); opacity: 1; filter: brightness(1); }
+            30% { transform: translateY(-15px) scale(1.05) rotate(-2deg); opacity: 1; filter: brightness(1.5); }
+            100% { transform: translateY(20px) scale(0.95) rotate(3deg); opacity: 1; filter: brightness(1) saturate(1); }
+        }
+
+        .boss-sprite.death-final .boss-image {
+            filter: brightness(1) saturate(1);
+            animation: none !important;
+        }
+
         /* Boss Projectiles - using sprite images */
         .boss-projectile {
             position: absolute;
@@ -316,7 +350,7 @@
             background-position: center;
             z-index: 40;
             pointer-events: none;
-            image-rendering: pixelated;
+            /*image-rendering: pixelated;*/
         }
 
         /* Boss Projectiles - Rage mode */
@@ -336,7 +370,7 @@
             background-position: center;
             z-index: 40;
             pointer-events: none;
-            image-rendering: pixelated;
+            /*image-rendering: pixelated;*/
         }
 
         /* Boss Projectiles - Rage mode */
@@ -356,7 +390,7 @@
             background-position: center;
             z-index: 25;
             pointer-events: none;
-            image-rendering: pixelated;
+            /*image-rendering: pixelated;*/
             filter: drop-shadow(0 0 4px rgba(250, 230, 155, 0.6));
         }
 
@@ -371,7 +405,7 @@
             background-size: contain;
             background-repeat: no-repeat;
             background-position: center;
-            image-rendering: pixelated;
+            /*image-rendering: pixelated;*/
             animation: impactPop 0.4s ease-out forwards;
         }
 
@@ -481,10 +515,6 @@
             content: url('images/death_state.PNG');
         }
         
-        .player-sprite-container.dead .player-arm-img {
-            display: none;
-        }
-        
         /* Shielded state - semi-transparent and immune */
         .player-sprite-container.shielded {
             opacity: 0.5;
@@ -504,6 +534,55 @@
             background-position: center;
             z-index: 30;
             pointer-events: none;
+        }
+        
+        /* Reviving state - progress bar under dead knight */
+        .revive-bar-container {
+            position: absolute;
+            bottom: -32px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 58px;
+            text-align: center;
+        }
+        
+        .revive-label {
+            font-family: 'Press Start 2P', cursive;
+            font-size: 8px;
+            color: var(--lavender);
+            text-shadow: 1px 1px 0 var(--bg-dark);
+            margin-bottom: 2px;
+        }
+        
+        .revive-bar {
+            width: 100%;
+            height: 6px;
+            background: #1a1a2a;
+            border: 1px solid var(--lavender);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+        
+        .revive-bar-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(180deg, var(--lavender) 0%, #7B6B8A 100%);
+            transition: width 0.25s linear;
+        }
+        
+        /* Revived state - uses ghost/skeleton sprite */
+        .player-sprite-container.revived {
+            filter: drop-shadow(0 0 8px rgba(154, 130, 169, 0.6));
+        }
+        
+        @keyframes reviveFlash {
+            0% { opacity: 0; transform: scale(0.5); filter: brightness(3) drop-shadow(0 0 20px rgba(154, 130, 169, 1)); }
+            40% { opacity: 1; transform: scale(1.2); filter: brightness(2) drop-shadow(0 0 15px rgba(154, 130, 169, 0.8)); }
+            100% { opacity: 1; transform: scale(1); filter: brightness(1) drop-shadow(0 0 8px rgba(154, 130, 169, 0.6)); }
+        }
+        
+        .player-sprite-container.revive-flash {
+            animation: reviveFlash 0.6s ease-out forwards;
         }
         
         /* Speech bubble for taunts */
@@ -543,15 +622,11 @@
         .knight-image {
             width: 61px;
             height: 61px;
-            image-rendering: pixelated;
+            /*image-rendering: pixelated;*/
             filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.5));
         }
 
         .player-sprite-container.walking .knight-image {
-            /* Animation handled by JavaScript frame switching */
-        }
-
-        .player-sprite-container.walking .player-arm-img {
             /* Animation handled by JavaScript frame switching */
         }
 
@@ -600,20 +675,9 @@
             z-index: 25;
         }
 
-        .player-arm-img {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 61px;
-            height: 61px;
-            image-rendering: pixelated;
-            filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.5));
-            z-index: 19;
-        }
-
         .player-info {
             position: absolute;
-            bottom: -22px;
+            bottom: -20px;
             left: 50%;
             transform: translateX(-50%);
             text-align: center;
@@ -621,7 +685,7 @@
         }
 
         .player-name {
-            font-size: 13px;
+            font-size: 22px;
             color: var(--cream);
             text-shadow: 1px 1px 0 #000;
             white-space: nowrap;
@@ -707,29 +771,6 @@
         .status-value.timer { color: var(--gold); }
         .status-value.players { color: var(--rose); }
 
-        /* Command Hints */
-        .command-hints {
-            position: absolute;
-            bottom: 90px;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            gap: 16px;
-            z-index: 40;
-        }
-
-        .command-hint {
-            background: rgba(26, 21, 32, 0.92);
-            padding: 10px 20px;
-            border-radius: 6px;
-            border: 3px solid var(--lavender);
-            font-family: 'VT323', monospace;
-            font-size: 21px;
-            color: var(--cream);
-        }
-
-        .command-hint .cmd { color: var(--rose); font-weight: bold; }
-
         /* Battle Log - Larger, bottom right */
         .battle-log {
             position: absolute;
@@ -785,7 +826,7 @@
 
         .phase-title {
             font-family: 'Press Start 2P', cursive;
-            font-size: 57px;
+            font-size: 66px;
             color: var(--rose);
             text-shadow: 6px 6px 0 var(--lavender);
             margin-bottom: 30px;
@@ -794,28 +835,29 @@
 
         .phase-subtitle {
             font-family: 'VT323', monospace;
-            font-size: 39px;
+            font-size: 45px;
             color: var(--cream);
             margin-bottom: 18px;
         }
 
         .phase-timer {
             font-family: 'Press Start 2P', cursive;
-            font-size: 84px;
+            padding-top: 20px;
+            font-size: 97px;
             color: var(--gold);
             text-shadow: 5px 5px 0 var(--bg-medium);
         }
 
         .phase-instruction {
             font-family: 'VT323', monospace;
-            font-size: 33px;
+            font-size: 38px;
             color: var(--lavender);
             margin-top: 30px;
         }
         
         .lobby-tip {
             font-family: 'VT323', monospace;
-            font-size: 24px;
+            font-size: 28px;
             color: var(--lavender);
             margin-top: 10px;
             opacity: 0.8;
@@ -851,31 +893,16 @@
         .lobby-knight .knight-image {
             width: 61px;
             height: 61px;
-            image-rendering: pixelated;
-        }
-        
-        .lobby-knight .player-arm {
-            position: absolute;
-            top: 11px;
-            left: 0;
-            width: 24px;
-            height: 35px;
-            z-index: 2;
-        }
-        
-        .lobby-knight .player-arm-img {
-            width: 100%;
-            height: 100%;
-            image-rendering: pixelated;
+            /*image-rendering: pixelated;*/
         }
         
         .lobby-knight .lobby-player-name {
             position: absolute;
-            bottom: -18px;
+            bottom: -8px;
             left: 50%;
             transform: translateX(-50%);
             font-family: 'Press Start 2P', cursive;
-            font-size: 7px;
+            font-size: 11px;
             color: var(--cream);
             text-shadow: 1px 1px 0 var(--bg-dark);
             white-space: nowrap;
@@ -892,7 +919,7 @@
             padding: 4px 8px;
             border-radius: 8px;
             font-family: 'Press Start 2P', cursive;
-            font-size: 8px;
+            font-size: 11px;
             white-space: nowrap;
             z-index: 100;
             animation: lobbySpeechPop 2.5s ease-out forwards;
@@ -941,7 +968,7 @@
             background-position: center;
             z-index: 8;
             pointer-events: none;
-            image-rendering: pixelated;
+            /*image-rendering: pixelated;*/
             filter: drop-shadow(0 0 4px rgba(250, 230, 155, 0.6));
         }
 
@@ -1097,7 +1124,7 @@
                 <div class="boss-name" id="boss-name">BATSY THE BEAST</div>
                 <div class="boss-health-bar">
                     <div class="boss-health-fill" id="boss-health-fill" style="width: 100%;"></div>
-                    <div class="boss-health-text" id="boss-health-text">750 / 750</div>
+                    <div class="boss-health-text" id="boss-health-text">1000 / 1000</div>
                 </div>
                 <div class="boss-phase" id="boss-phase">GROUND SLAM</div>
             </div>
@@ -1113,12 +1140,6 @@
         <div class="player-area" id="player-area"></div>
 
         <div id="floating-text-container" style="position:absolute;top:0;left:0;right:0;bottom:0;z-index:200;pointer-events:none;"></div>
-
-        <div class="command-hints" id="command-hints" style="display:none;">
-            <div class="command-hint"><span class="cmd">!attack</span> - Deal damage</div>
-            <div class="command-hint"><span class="cmd">!heal</span> - Heal yourself</div>
-            <div class="command-hint"><span class="cmd">!shield</span> - Block damage</div>
-        </div>
 
         <div class="battle-log" id="battle-log">
             <div class="battle-log-title">Battle Log</div>
@@ -1160,19 +1181,20 @@
             <div class="phase-title" id="boss-intro-name">BATSY THE BEAST</div>
             <div class="phase-subtitle">has awoken!</div>
             <div style="background: rgba(46, 39, 51, 0.9); padding: 25px 40px; border-radius: 12px; border: 3px solid var(--lavender); max-width: 800px; text-align: left; margin-top: 20px;">
-                <div style="font-size: 22px; color: var(--cream); line-height: 1.7; margin-bottom: 15px;">
+                <div style="font-size: 28px; color: var(--rose); line-height: 1.7; margin-bottom: 15px; text-align: center;">
                     Work together to kill Batsy the Beast. The player to collectively earn the most points through attacking and healing will be crowned winner.
                 </div>
-                <div style="font-size: 20px; color: var(--cream); line-height: 1.8;">
+                <div style="font-size: 24px; color: var(--cream); line-height: 1.8;">
                     <div style="margin-bottom: 10px;"><span style="color: var(--rose);">!attack</span> — Cause damage to Batsy</div>
-                    <div style="margin-bottom: 10px;"><span style="color: var(--rose);">!heal</span> — Heal yourself, or tag another player to heal them instead</div>
-                    <div style="margin-bottom: 10px;"><span style="color: var(--rose);">!shield</span> — Block all damage for 5 seconds (you cannot attack or heal during this period)</div>
-                    <div style="margin-bottom: 10px;"><span style="color: var(--rose);">!taunt 'message'</span> — Feeling brave? Taunt Batsy to increase your next attack by 50%! (18 char limit)</div>
-                    <div style="margin-top: 15px; font-size: 18px; color: var(--lavender); text-align: center;">All commands have cooldowns, so no need to spam.</div>
+                    <div style="margin-bottom: 10px;"><span style="color: var(--rose);">!heal</span> — Heal yourself or tag another player to heal them</div>
+                    <div style="margin-bottom: 10px;"><span style="color: var(--rose);">!shield</span> — Block all damage (you cannot attack or heal during this period)</div>
+                    <div style="margin-bottom: 10px;"><span style="color: var(--rose);">!taunt 'message'</span> — Taunt Batsy to increase your next attack (18 char)</div>
+                    <div style="margin-bottom: 10px;"><span style="color: var(--rose);">!revive @player</span> — Revive a fallen teammate (15 seconds)</div>
+                    <div style="margin-top: 15px; font-size: 22px; color: var(--lavender); text-align: center;">All commands have cooldowns, so no need to spam.</div>
                 </div>
             </div>
             <div class="phase-timer" id="intro-timer" style="margin-top: 25px;">20</div>
-            <div style="font-size: 20px; color: var(--lavender); margin-top: 5px;">Battle begins in...</div>
+            <div style="font-size: 26px; color: var(--lavender); margin-top: 5px;">Battle begins in...</div>
         </div>
 
         <!-- Rage Warning Overlay -->
@@ -1220,7 +1242,11 @@
         </div>
         
         <!-- Version Label -->
-        <div class="version-label">v2.0</div>
+        <div class="version-label">Version 6.6.6</div>
+        
+        <!-- Music -->
+        <audio id="music-lobby" src="audio/Pixel-Fantasia.mp3" preload="auto" loop></audio>
+        <audio id="music-battle" src="audio/Halloween-Retro.mp3" preload="auto" loop></audio>
     </div>
 
     <script>
@@ -1234,11 +1260,21 @@
             5: 'images/knight_run_5.PNG'
         };
 
+        // Revived player animation frames (5 frames - ghost/skeleton style)
+        const REVIVED_FRAMES = {
+            1: 'images/revived_player_1.PNG',
+            2: 'images/revived_player_2.PNG',
+            3: 'images/revived_player_3.PNG',
+            4: 'images/revived_player_4.PNG',
+            5: 'images/revived_player_5.PNG'
+        };
+
                 // ===== BATSY ANIMATION FRAMES =====
         const BATSY_FRAMES = {
             'static': 'images/batsy_static.PNG',
             'preslam': 'images/batsy_preslam.PNG',
-            'slam': 'images/batsy_slam.PNG'
+            'slam': 'images/batsy_slam.PNG',
+            'death': 'images/batsy_death.PNG'
         };
         
         // Projectile images per weapon
@@ -1272,7 +1308,7 @@
             bossIntroDuration: 30,
             
             // Boss Stats (single phase)
-            bossHealth: 750,
+            bossHealth: 1000,
             attackInterval: 3000,
             hitChance: 0.5,
             projectilesMin: 5,
@@ -1296,7 +1332,7 @@
             maxDamageMultiplier: 1.5,
             minDamageMultiplier: 0.7,
             
-            playerMoveSpeed: 3.6,
+            playerMoveSpeed: 4.0,
             playerMoveInterval: 50,
             playAreaWidth: 1760,
             playAreaHeight: 540,
@@ -1371,6 +1407,77 @@
         let audioCtx = null;
         function initAudio() { if (!audioCtx) audioCtx = new AudioContext(); }
         
+        // ===== MUSIC SYSTEM =====
+        const music = {
+            lobby: null,
+            battle: null,
+            fadeInterval: null,
+            volume: 0.2 // Master music volume
+        };
+        
+        function initMusic() {
+            if (!music.lobby) music.lobby = document.getElementById('music-lobby');
+            if (!music.battle) music.battle = document.getElementById('music-battle');
+        }
+        
+        function playMusic(track) {
+            initMusic();
+            const audio = track === 'lobby' ? music.lobby : music.battle;
+            const other = track === 'lobby' ? music.battle : music.lobby;
+            if (!audio) return;
+            
+            // Clear any ongoing fade
+            if (music.fadeInterval) {
+                clearInterval(music.fadeInterval);
+                music.fadeInterval = null;
+            }
+            
+            // Fade out the other track if playing
+            if (other && !other.paused) {
+                fadeOutMusic(other, 800);
+            }
+            
+            // Start new track
+            audio.volume = 0;
+            audio.currentTime = 0;
+            audio.play().catch(() => {}); // Catch autoplay restrictions silently
+            
+            // Fade in
+            let vol = 0;
+            const fadeIn = setInterval(() => {
+                vol += 0.02;
+                if (vol >= music.volume) {
+                    vol = music.volume;
+                    clearInterval(fadeIn);
+                }
+                audio.volume = vol;
+            }, 30);
+        }
+        
+        function fadeOutMusic(audio, duration) {
+            if (!audio || audio.paused) return;
+            const startVol = audio.volume;
+            const step = startVol / (duration / 30);
+            const fade = setInterval(() => {
+                audio.volume = Math.max(0, audio.volume - step);
+                if (audio.volume <= 0) {
+                    clearInterval(fade);
+                    audio.pause();
+                    audio.currentTime = 0;
+                }
+            }, 30);
+        }
+        
+        function stopAllMusic() {
+            initMusic();
+            if (music.fadeInterval) {
+                clearInterval(music.fadeInterval);
+                music.fadeInterval = null;
+            }
+            [music.lobby, music.battle].forEach(audio => {
+                if (audio) fadeOutMusic(audio, 1500);
+            });
+        }
         // Boss animation frame switcher
         function setBossFrame(frame) {
             if (elements.bossImage && BATSY_FRAMES[frame]) {
@@ -1405,16 +1512,14 @@
                 
                 const frame = gameState.animationFrame || 1;
                 
-                // Update knight body
+                // Update knight body — use revived frames if applicable
                 const knightImg = el.querySelector('.knight-image');
-                if (knightImg && KNIGHT_FRAMES[frame]) {
-                    knightImg.src = KNIGHT_FRAMES[frame];
-                }
-                
-                // Update weapon arm (bow)
-                const armImg = el.querySelector('.player-arm-img');
-                if (armImg && WEAPON_ARM_FRAMES.bow[frame]) {
-                    armImg.src = WEAPON_ARM_FRAMES.bow[frame];
+                if (knightImg) {
+                    if (player.revived) {
+                        knightImg.src = REVIVED_FRAMES[frame] || REVIVED_FRAMES[1];
+                    } else if (KNIGHT_FRAMES[frame]) {
+                        knightImg.src = KNIGHT_FRAMES[frame];
+                    }
                 }
             });
         }
@@ -1440,26 +1545,6 @@
                 }
             }
             return false;
-        }
-        
-        // Get a valid spawn X position (not in restricted zones)
-        function getValidSpawnX() {
-            let x, attempts = 0;
-            do {
-                x = 80 + Math.random() * (CONFIG.playAreaWidth - 160);
-                attempts++;
-            } while (isInRestrictedZone(x, 80 + Math.random() * (CONFIG.playAreaHeight - 160)) && attempts < 50);
-            return x;
-        }
-        
-        // Get a valid spawn Y position (not in restricted zones)
-        function getValidSpawnY() {
-            let y, attempts = 0;
-            do {
-                y = 80 + Math.random() * (CONFIG.playAreaHeight - 160);
-                attempts++;
-            } while (isInRestrictedZone(80 + Math.random() * (CONFIG.playAreaWidth - 160), y) && attempts < 50);
-            return y;
         }
         
         // Get valid spawn position (both X and Y checked together)
@@ -1588,12 +1673,37 @@
                     }, 800);
                     break;
                     
+                case 'bossDeath':
+                    // Deep dramatic death rumble - the beast falls
+                    createTone(80, 0.6, 'sawtooth', 0.35, 20);
+                    createTone(60, 0.5, 'sawtooth', 0.3, 15);
+                    createTone(120, 0.4, 'square', 0.2, 30);
+                    setTimeout(() => {
+                        createTone(50, 0.8, 'sawtooth', 0.3, 10);
+                        createTone(100, 0.5, 'square', 0.15, 25);
+                    }, 300);
+                    // Final low thud
+                    setTimeout(() => {
+                        createTone(35, 1.0, 'sawtooth', 0.35, 8);
+                        createTone(70, 0.6, 'triangle', 0.15, 15);
+                    }, 800);
+                    break;
+                    
                 case 'victory':
                     // Triumphant fanfare
                     const victoryNotes = [523, 659, 784, 1047, 784, 1047];
                     victoryNotes.forEach((freq, i) => {
                         setTimeout(() => createTone(freq, 0.2, 'square', 0.15), i * 120);
                     });
+                    break;
+                    
+                case 'revive':
+                    // Ethereal rising chime - mystical resurrection
+                    createTone(330, 0.15, 'sine', 0.12);
+                    setTimeout(() => createTone(440, 0.15, 'sine', 0.12), 100);
+                    setTimeout(() => createTone(554, 0.15, 'sine', 0.12), 200);
+                    setTimeout(() => createTone(659, 0.15, 'sine', 0.1), 300);
+                    setTimeout(() => createTone(880, 0.25, 'sine', 0.1), 400);
                     break;
                     
                 case 'defeat':
@@ -1628,8 +1738,7 @@
             defeatScreen: document.getElementById('defeat-screen'),
             battleLog: document.getElementById('battle-log'),
             floatingTextContainer: document.getElementById('floating-text-container'),
-            projectilesContainer: document.getElementById('projectiles-container'),
-            commandHints: document.getElementById('command-hints')
+            projectilesContainer: document.getElementById('projectiles-container')
         };
 
         function getBossCenter() {
@@ -1666,9 +1775,11 @@
                     else if (message.startsWith('!heal')) playerHeal(username, message.split(' ')[1]);
                     else if (message === '!shield') playerShield(username);
                     else if (message.startsWith('!taunt')) playerTaunt(username, message);
+                    else if (message.startsWith('!revive')) playerRevive(username, message.split(' ')[1]);
                     break;
             }
             if ((message === '!bossfight' || message === '!startboss') && isMod) startLobby();
+            if (message === '!restart' && isMod) restartGame();
         }
 
         function startPlayerMovement() {
@@ -1711,10 +1822,7 @@
                         el.style.left = player.x + 'px';
                         el.style.top = player.y + 'px';
                         const img = el.querySelector('.knight-image');
-                        const arm = el.querySelector('.player-arm-img');
-                        const flipTransform = Math.cos(player.direction) < 0 ? 'scaleX(-1)' : 'scaleX(1)';
-                        if (img) img.style.transform = flipTransform;
-                        if (arm) arm.style.transform = flipTransform;
+                        if (img) img.style.transform = Math.cos(player.direction) < 0 ? 'scaleX(-1)' : 'scaleX(1)';
                     }
                 });
             }, CONFIG.playerMoveInterval);
@@ -1750,6 +1858,9 @@
             // Start lobby knight animation
             startLobbyAnimation();
             startLobbyMovement();
+            
+            // Start lobby music
+            playMusic('lobby');
             
             let timeLeft = CONFIG.lobbyDuration;
             elements.lobbyTimer.textContent = timeLeft;
@@ -1791,6 +1902,13 @@
                 if (introTimerEl) {
                     introTimerEl.textContent = introTimeLeft;
                 }
+                // Begin fading out lobby music with 5 seconds left
+                if (introTimeLeft === 5) {
+                    initMusic();
+                    if (music.lobby && !music.lobby.paused) {
+                        fadeOutMusic(music.lobby, 5000);
+                    }
+                }
                 if (introTimeLeft <= 0) {
                     clearInterval(gameState.timers.intro);
                     elements.bossIntroOverlay.classList.remove('active');
@@ -1804,7 +1922,6 @@
             gameState.gameStartTime = Date.now();
             gameState.slamCount = 0;
             gameState.nextRageSlam = calculateNextRageSlam();
-            elements.commandHints.style.display = 'flex';
             startPlayerMovement();
             document.querySelectorAll('.player-sprite-container').forEach(el => el.classList.add('walking'));
             startPlayerAnimation();
@@ -1812,7 +1929,57 @@
             gameState.timers.bossAttack = setInterval(bossAttack, CONFIG.attackInterval);
             gameState.timers.gameTimer = setInterval(updateGameTimer, 1000);
             
+            // Switch to battle music
+            playMusic('battle');
+            
             addBattleLog('System', 'BATTLE START!', 'system');
+        }
+
+        function triggerBossDeath() {
+            // Stop the battle immediately — no more boss attacks or player movement
+            gameState.phase = 'boss_death';
+            Object.values(gameState.timers).forEach(t => clearInterval(t));
+            gameState.timers = {};
+            
+            // Clean up active projectiles
+            gameState.activeProjectiles.forEach(p => {
+                if (p.element && p.element.parentNode) p.element.remove();
+            });
+            gameState.activeProjectiles = [];
+            
+            initAudio();
+            playSound('bossDeath');
+            
+            // Begin fading out battle music
+            stopAllMusic();
+            
+            addBattleLog('BATSY', 'has been SLAIN!', 'boss');
+            
+            // Screen shake on killing blow
+            elements.game.classList.add('shaking');
+            setTimeout(() => elements.game.classList.remove('shaking'), 300);
+            
+            // Phase 1: Violent shake (0 - 800ms)
+            elements.bossSprite.classList.remove('damaged', 'slamming', 'frenzied');
+            elements.bossSprite.classList.add('death-shake');
+            
+            // Phase 2: Collapse animation + swap to death image (800ms - 1800ms)
+            setTimeout(() => {
+                elements.bossSprite.classList.remove('death-shake');
+                elements.bossSprite.classList.add('death-collapse');
+                setBossFrame('death');
+            }, 800);
+            
+            // Phase 3: Hold death pose (1800ms - 3500ms)
+            setTimeout(() => {
+                elements.bossSprite.classList.remove('death-collapse');
+                elements.bossSprite.classList.add('death-final');
+            }, 1800);
+            
+            // Phase 4: Transition to victory screen (3500ms)
+            setTimeout(() => {
+                endGame('victory');
+            }, 3500);
         }
 
         function endGame(result) {
@@ -1823,15 +1990,49 @@
             stopLobbyMovement();
             stopLobbyAnimation();
             
+            // Clean up active projectiles
+            gameState.activeProjectiles.forEach(p => {
+                if (p.element && p.element.parentNode) p.element.remove();
+            });
+            gameState.activeProjectiles = [];
+            
             ['lobbyOverlay', 'bossIntroOverlay', 'rageOverlay'].forEach(o => elements[o].classList.remove('active'));
             elements.game.classList.remove('rage-mode');
-            elements.commandHints.style.display = 'none';
             elements.lobbyPlayerArea.innerHTML = '';
             document.querySelectorAll('.player-sprite-container').forEach(el => el.classList.remove('walking'));
             stopPlayerAnimation();
             
+            // Fade out music
+            stopAllMusic();
+            
             if (result === 'victory') showVictoryScreen();
             else if (result === 'defeat') showDefeatScreen();
+        }
+        
+        function restartGame() {
+            // Hide result screens
+            elements.victoryScreen.classList.remove('active');
+            elements.defeatScreen.classList.remove('active');
+            
+            // Reset boss sprite state
+            elements.bossSprite.classList.remove('death-shake', 'death-collapse', 'death-final', 'damaged', 'slamming', 'frenzied');
+            setBossFrame('static');
+            
+            // Clear battle log except header
+            while (elements.battleLog.children.length > 1) {
+                elements.battleLog.children[1].remove();
+            }
+            
+            // Clear player area and projectiles
+            elements.playerArea.innerHTML = '';
+            elements.projectilesContainer.innerHTML = '';
+            elements.floatingTextContainer.innerHTML = '';
+            
+            // Reset phase to allow startLobby
+            gameState.phase = 'idle';
+            
+            // Start new lobby
+            startLobby();
         }
 
         function joinGame(username) {
@@ -1849,6 +2050,8 @@
                 damage: 0,
                 healing: 0,
                 alive: true,
+                revived: false,
+                hasRevived: false,
                 lastAttack: 0,
                 lastHeal: 0,
                 lastShield: 0,
@@ -1951,10 +2154,7 @@
                         el.style.left = player.x + 'px';
                         el.style.top = player.y + 'px';
                         const img = el.querySelector('.knight-image');
-                        const arm = el.querySelector('.player-arm-img');
-                        const flipTransform = Math.cos(player.direction) < 0 ? 'scaleX(-1)' : 'scaleX(1)';
-                        if (img) img.style.transform = flipTransform;
-                        if (arm) arm.style.transform = flipTransform;
+                        if (img) img.style.transform = Math.cos(player.direction) < 0 ? 'scaleX(-1)' : 'scaleX(1)';
                     }
                 });
             }, CONFIG.playerMoveInterval);
@@ -2080,13 +2280,17 @@
             const player = gameState.players[username];
             if (!player || !player.alive) return;
             if (player.shielded) return; // Can't attack while shielded
-            if (Date.now() - player.lastAttack < CONFIG.attackCooldown) return;
+            if (Date.now() - player.lastAttack < CONFIG.attackCooldown) {
+                const remaining = Math.ceil((CONFIG.attackCooldown - (Date.now() - player.lastAttack)) / 1000);
+                addBattleLog(player.username, `attack on cooldown (${remaining}s)`, 'system');
+                return;
+            }
             player.lastAttack = Date.now();
             
             initAudio();
             
-            // Random number of arrows (1-3)
-            const arrowCount = 1 + Math.floor(Math.random() * 3);
+            // Random number of arrows (1-2)
+            const arrowCount = 1 + Math.floor(Math.random() * 2);
             const arrowInterval = 500; // 0.5 seconds between arrows
             
             for (let i = 0; i < arrowCount; i++) {
@@ -2176,7 +2380,7 @@
                     
                     // Check victory
                     if (gameState.boss.health <= 0) {
-                        endGame('victory');
+                        triggerBossDeath();
                     }
                 }
             }
@@ -2188,7 +2392,11 @@
             const player = gameState.players[username];
             if (!player || !player.alive) return;
             if (player.shielded) return; // Can't heal while shielded
-            if (Date.now() - player.lastHeal < CONFIG.healCooldown) return;
+            if (Date.now() - player.lastHeal < CONFIG.healCooldown) {
+                const remaining = Math.ceil((CONFIG.healCooldown - (Date.now() - player.lastHeal)) / 1000);
+                addBattleLog(player.username, `heal on cooldown (${remaining}s)`, 'system');
+                return;
+            }
             player.lastHeal = Date.now();
             
             initAudio();
@@ -2223,7 +2431,11 @@
             const player = gameState.players[username];
             if (!player || !player.alive) return;
             if (player.shielded) return; // Already shielded
-            if (Date.now() - player.lastShield < 15000) return; // 15 second cooldown
+            if (Date.now() - player.lastShield < 15000) {
+                const remaining = Math.ceil((15000 - (Date.now() - player.lastShield)) / 1000);
+                addBattleLog(player.username, `shield on cooldown (${remaining}s)`, 'system');
+                return;
+            }
             
             player.shielded = true;
             player.lastShield = Date.now();
@@ -2269,6 +2481,140 @@
                 // Remove bubble after 3 seconds
                 setTimeout(() => bubble.remove(), 3000);
             }
+        }
+        
+        function playerRevive(username, target) {
+            const player = gameState.players[username];
+            if (!player) return;
+            
+            // Only dead players can revive
+            if (player.alive) {
+                addBattleLog(player.username, 'you must be defeated to revive others', 'system');
+                return;
+            }
+            
+            // One revive per game
+            if (player.hasRevived) {
+                addBattleLog(player.username, 'already used revive this game', 'system');
+                return;
+            }
+            
+            // Must target someone
+            if (!target || !target.startsWith('@')) {
+                addBattleLog(player.username, 'use !revive @playername', 'system');
+                return;
+            }
+            
+            const targetName = target.substring(1).toLowerCase();
+            const targetPlayer = Object.values(gameState.players).find(
+                p => p.username.toLowerCase() === targetName
+            );
+            
+            // Can't revive yourself
+            if (targetPlayer && targetPlayer.username === username) {
+                addBattleLog(player.username, 'cannot revive yourself', 'system');
+                return;
+            }
+            
+            if (!targetPlayer) {
+                addBattleLog(player.username, 'player not found', 'system');
+                return;
+            }
+            
+            if (targetPlayer.alive) {
+                addBattleLog(player.username, `${targetPlayer.username} is still alive`, 'system');
+                return;
+            }
+            
+            // Already being revived by someone else
+            if (targetPlayer.reviving) {
+                addBattleLog(player.username, `${targetPlayer.username} is already being revived`, 'system');
+                return;
+            }
+            
+            // Mark revive used immediately
+            player.hasRevived = true;
+            targetPlayer.reviving = true;
+            
+            initAudio();
+            addBattleLog(player.username, `is reviving ${targetPlayer.username}...`, 'heal');
+            
+            // Show revive bar on the target's death marker
+            const targetEl = document.querySelector(`[data-username="${targetPlayer.username}"]`);
+            if (targetEl) {
+                // Remove any existing revive bar
+                const existing = targetEl.querySelector('.revive-bar-container');
+                if (existing) existing.remove();
+                
+                const barContainer = document.createElement('div');
+                barContainer.className = 'revive-bar-container';
+                barContainer.innerHTML = `
+                    <div class="revive-label">REVIVING...</div>
+                    <div class="revive-bar">
+                        <div class="revive-bar-fill" id="revive-fill-${targetPlayer.username}"></div>
+                    </div>
+                `;
+                targetEl.appendChild(barContainer);
+                
+                // Animate the bar over 15 seconds
+                const reviveDuration = 15000;
+                const reviveStart = Date.now();
+                const fillEl = barContainer.querySelector('.revive-bar-fill');
+                
+                function updateReviveBar() {
+                    if (gameState.phase !== 'battle') {
+                        barContainer.remove();
+                        targetPlayer.reviving = false;
+                        return;
+                    }
+                    
+                    const elapsed = Date.now() - reviveStart;
+                    const progress = Math.min(elapsed / reviveDuration, 1);
+                    fillEl.style.width = (progress * 100) + '%';
+                    
+                    if (progress < 1) {
+                        requestAnimationFrame(updateReviveBar);
+                    } else {
+                        // Revive complete
+                        barContainer.remove();
+                        targetPlayer.reviving = false;
+                        completeRevive(targetPlayer);
+                    }
+                }
+                
+                requestAnimationFrame(updateReviveBar);
+            }
+        }
+        
+        function completeRevive(player) {
+            player.alive = true;
+            player.revived = true;
+            player.health = Math.floor(player.maxHealth * 0.5); // Revive at 50% HP
+            
+            initAudio();
+            playSound('revive');
+            
+            addBattleLog(player.username, 'has been revived!', 'heal');
+            
+            const el = document.querySelector(`[data-username="${player.username}"]`);
+            if (el) {
+                // Remove dead class, add revived and flash
+                el.classList.remove('dead');
+                el.classList.add('revived', 'revive-flash', 'walking');
+                setTimeout(() => el.classList.remove('revive-flash'), 600);
+                
+                // Swap to revived sprite
+                const knightImg = el.querySelector('.knight-image');
+                if (knightImg) {
+                    const frame = gameState.animationFrame || 1;
+                    knightImg.src = REVIVED_FRAMES[frame] || REVIVED_FRAMES[1];
+                }
+                
+                // Show health bar again
+                updatePlayerSprite(player.username);
+            }
+            
+            updateUI();
         }
         
         function resetBoss() {
@@ -2441,6 +2787,61 @@
             }
         }
 
+        function applyProjectileDamage(player, projectileData) {
+            const px = CONFIG.playerAreaOffsetX + player.x;
+            const py = CONFIG.playerAreaOffsetY + player.y;
+            
+            projectileData.hasHit = true;
+            projectileData.element.remove();
+            
+            const impact = document.createElement('div');
+            impact.className = 'impact' + (projectileData.isRage ? ' phase2' : '');
+            impact.style.left = (projectileData.x - 20) + 'px';
+            impact.style.top = projectileData.y + 'px';
+            elements.projectilesContainer.appendChild(impact);
+            setTimeout(() => impact.remove(), 400);
+            
+            const mult = getDistanceMultiplier(player);
+            let dmg = Math.floor(CONFIG.bossBaseDamage * mult * (0.7 + Math.random() * 0.6));
+            if (projectileData.isRage) dmg = Math.floor(dmg * CONFIG.rageDamageMultiplier);
+            
+            player.health -= dmg;
+            playSound('hit');
+            const label = projectileData.isSideRain ? `took ${dmg} damage (side rain)` : `took ${dmg} damage`;
+            addBattleLog(player.username, label, 'hit');
+            
+            const el = document.querySelector(`[data-username="${player.username}"]`);
+            if (el) {
+                el.classList.add('damaged');
+                setTimeout(() => el.classList.remove('damaged'), 250);
+            }
+            
+            updatePlayerSprite(player.username);
+            createFloatingText({ left: px, top: py, width: CONFIG.playerHitboxWidth, height: CONFIG.playerHitboxHeight }, `-${dmg}`, 'damage');
+            
+            if (player.health <= 0) {
+                player.health = 0;
+                player.alive = false;
+                playSound('death');
+                const deathMarker = document.createElement('div');
+                deathMarker.className = 'impact death-marker';
+                deathMarker.style.left = (px - 30) + 'px';
+                deathMarker.style.top = (py - 30) + 'px';
+                elements.projectilesContainer.appendChild(deathMarker);
+                setTimeout(() => deathMarker.remove(), 600);
+                
+                createDeathEffect(px, py);
+                addBattleLog(player.username, 'defeated!', 'death');
+                updatePlayerSprite(player.username);
+            }
+            
+            updateUI();
+            if (Object.values(gameState.players).filter(p => p.alive).length === 0) endGame('defeat');
+            
+            const idx = gameState.activeProjectiles.indexOf(projectileData);
+            if (idx > -1) gameState.activeProjectiles.splice(idx, 1);
+        }
+
         function launchBossProjectile(hitChance, isRage) {
             const projectile = document.createElement('div');
             projectile.className = 'boss-projectile' + (isRage ? ' rage' : '');
@@ -2506,12 +2907,10 @@
                 if (projectileData.willHit) {
                     const alive = Object.values(gameState.players).filter(p => p.alive);
                     for (const player of alive) {
-                        if (player.shielded) continue; // Skip shielded players
+                        if (player.shielded) continue;
                         
-                        const px = 80 + player.x;
-                        const py = CONFIG.playerAreaTop + player.y;
-                        
-                        // Use actual projectile size for collision
+                        const px = CONFIG.playerAreaOffsetX + player.x;
+                        const py = CONFIG.playerAreaOffsetY + player.y;
                         const projSize = projectileData.isRage ? CONFIG.rageProjectileSize : CONFIG.projectileSize;
                         
                         if (projectileData.x > px - projSize &&
@@ -2519,57 +2918,7 @@
                             projectileData.y > py - projSize &&
                             projectileData.y < py + CONFIG.playerHitboxHeight) {
                             
-                            projectileData.hasHit = true;
-                            projectile.remove();
-                            
-                            const impact = document.createElement('div');
-                            impact.className = 'impact' + (projectileData.isRage ? ' phase2' : '');
-                            impact.style.left = (projectileData.x - 20) + 'px';
-                            impact.style.top = projectileData.y + 'px';
-                            elements.projectilesContainer.appendChild(impact);
-                            setTimeout(() => impact.remove(), 400);
-                            
-                            const mult = getDistanceMultiplier(player);
-                            let dmg = Math.floor(CONFIG.bossBaseDamage * mult * (0.7 + Math.random() * 0.6));
-                            if (projectileData.isRage) dmg = Math.floor(dmg * 1.25);
-                            
-                            player.health -= dmg;
-                            playSound('hit');
-                            addBattleLog(player.username, `took ${dmg} damage`, 'hit');
-                            
-                            const el = document.querySelector(`[data-username="${player.username}"]`);
-                            if (el) {
-                                el.classList.add('damaged');
-                                setTimeout(() => el.classList.remove('damaged'), 250);
-                            }
-                            
-                            // Update health bar display
-                            updatePlayerSprite(player.username);
-                            
-                            createFloatingText({ left: px, top: py, width: CONFIG.playerHitboxWidth, height: CONFIG.playerHitboxHeight }, `-${dmg}`, 'damage');
-                            
-                            if (player.health <= 0) {
-                                player.health = 0;
-                                player.alive = false;
-                                playSound('death');
-                                // Show death hit marker
-                                const deathMarker = document.createElement('div');
-                                deathMarker.className = 'impact death-marker';
-                                deathMarker.style.left = (px - 30) + 'px';
-                                deathMarker.style.top = (py - 30) + 'px';
-                                elements.projectilesContainer.appendChild(deathMarker);
-                                setTimeout(() => deathMarker.remove(), 600);
-                                
-                                createDeathEffect(px, py);
-                                addBattleLog(player.username, 'defeated!', 'death');
-                                updatePlayerSprite(player.username);
-                            }
-                            
-                            updateUI();
-                            if (Object.values(gameState.players).filter(p => p.alive).length === 0) endGame('defeat');
-                            
-                            const idx = gameState.activeProjectiles.indexOf(projectileData);
-                            if (idx > -1) gameState.activeProjectiles.splice(idx, 1);
+                            applyProjectileDamage(player, projectileData);
                             return;
                         }
                     }
@@ -2660,54 +3009,7 @@
                             projectileData.y > py - projSize &&
                             projectileData.y < py + CONFIG.playerHitboxHeight) {
                             
-                            projectileData.hasHit = true;
-                            projectile.remove();
-                            
-                            const impact = document.createElement('div');
-                            impact.className = 'impact' + (projectileData.isRage ? ' phase2' : '');
-                            impact.style.left = (projectileData.x - 20) + 'px';
-                            impact.style.top = projectileData.y + 'px';
-                            elements.projectilesContainer.appendChild(impact);
-                            setTimeout(() => impact.remove(), 400);
-                            
-                            const mult = getDistanceMultiplier(player);
-                            let dmg = Math.floor(CONFIG.bossBaseDamage * mult * (0.7 + Math.random() * 0.6));
-                            if (projectileData.isRage) dmg = Math.floor(dmg * 1.25);
-                            
-                            player.health -= dmg;
-                            playSound('hit');
-                            addBattleLog(player.username, `took ${dmg} damage (side rain)`, 'hit');
-                            
-                            const el = document.querySelector(`[data-username="${player.username}"]`);
-                            if (el) {
-                                el.classList.add('damaged');
-                                setTimeout(() => el.classList.remove('damaged'), 250);
-                            }
-                            
-                            updatePlayerSprite(player.username);
-                            createFloatingText({ left: px, top: py, width: CONFIG.playerHitboxWidth, height: CONFIG.playerHitboxHeight }, `-${dmg}`, 'damage');
-                            
-                            if (player.health <= 0) {
-                                player.health = 0;
-                                player.alive = false;
-                                playSound('death');
-                                const deathMarker = document.createElement('div');
-                                deathMarker.className = 'impact death-marker';
-                                deathMarker.style.left = (px - 30) + 'px';
-                                deathMarker.style.top = (py - 30) + 'px';
-                                elements.projectilesContainer.appendChild(deathMarker);
-                                setTimeout(() => deathMarker.remove(), 600);
-                                
-                                createDeathEffect(px, py);
-                                addBattleLog(player.username, 'defeated!', 'death');
-                                updatePlayerSprite(player.username);
-                            }
-                            
-                            updateUI();
-                            if (Object.values(gameState.players).filter(p => p.alive).length === 0) endGame('defeat');
-                            
-                            const idx = gameState.activeProjectiles.indexOf(projectileData);
-                            if (idx > -1) gameState.activeProjectiles.splice(idx, 1);
+                            applyProjectileDamage(player, projectileData);
                             return;
                         }
                     }
@@ -2781,7 +3083,12 @@
             const el = document.querySelector(`[data-username="${username}"]`);
             if (!el) return;
             
-            el.className = `player-sprite-container ${player.alive ? '' : 'dead'} ${gameState.phase === 'battle' && player.alive ? 'walking' : ''}`;
+            // Build class list
+            let classes = 'player-sprite-container';
+            if (!player.alive) classes += ' dead';
+            else if (gameState.phase === 'battle') classes += ' walking';
+            if (player.revived && player.alive) classes += ' revived';
+            el.className = classes;
             
             const healthPct = (player.health / player.maxHealth) * 100;
             const healthFill = el.querySelector('.player-health-fill');
@@ -2791,11 +3098,15 @@
                 healthFill.className = `player-health-fill ${healthClass}`;
             }
             
-            // Update knight frame
+            // Update knight frame — use revived frames if player was revived
             const knightImg = el.querySelector('.knight-image');
             if (knightImg) {
                 const frame = gameState.animationFrame || 1;
-                knightImg.src = KNIGHT_FRAMES[frame] || KNIGHT_FRAMES[1];
+                if (player.revived && player.alive) {
+                    knightImg.src = REVIVED_FRAMES[frame] || REVIVED_FRAMES[1];
+                } else {
+                    knightImg.src = KNIGHT_FRAMES[frame] || KNIGHT_FRAMES[1];
+                }
             }
         }
 
@@ -2920,13 +3231,15 @@
             if (e.key === 'd') handleCommand('Player3', gameState.phase === 'lobby' ? '!attack @Player1' : '!attack');
             if (e.key === 'f') handleCommand('Player4', gameState.phase === 'lobby' ? '!attack @Player2' : '!attack');
             if (e.key === 'g') handleCommand('Player5', gameState.phase === 'lobby' ? '!attack @Player3' : '!attack');
-            if (e.key === 'h') handleCommand('Player1', '!heal');
-            if (e.key === 'r') handleCommand('Player1', '!shield');
+            if (e.key === 'h') handleCommand('Player5', '!heal');
+            if (e.key === 'r') handleCommand('Player5', '!shield');
             if (e.key === 't') handleCommand('Player1', '!taunt You smell bad!');
+            if (e.key === 'v') handleCommand('Player2', '!revive @Player1');
+            if (e.key === 'm') handleCommand('Player4', '!revive @Player3');
         });
 
-        console.log('GeoRose Boss Battle v5 - Batsy The Beast');
-        console.log('ENTER=start, 1-5=join, A/S/D/F/G=attack (lobby: shoots other players), H=heal, R=shield, T=taunt');*/
+        console.log('GeoRose Boss Battle v2.0 - Batsy The Beast');
+        console.log('ENTER=start, 1-5=join, A/S/D/F/G=attack (lobby: shoots other players), H=heal, R=shield, T=taunt, V=P2 revives P1');*/
     </script>
 </body>
 </html>
