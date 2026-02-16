@@ -471,6 +471,109 @@
             pointer-events: none;
         }
 
+        /* Weakened phase - boss visual shift */
+        .game-container.weakened-mode .boss-name {
+            color: #F6AAB4;
+        }
+        
+        .game-container.weakened-mode .boss-phase {
+            color: #9A82A9;
+        }
+        
+        .game-container.weakened-mode .boss-image {
+            filter: drop-shadow(0 8px 20px rgba(0,0,0,0.6)) drop-shadow(0 0 15px rgba(154, 130, 169, 0.4));
+        }
+
+        /* Bat swarm - individual bat */
+        .swarm-bat {
+            position: absolute;
+            width: 70px;
+            height: 70px;
+            z-index: 45;
+            pointer-events: none;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
+        }
+
+        .swarm-bat img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        /* Weakened phase transition overlay */
+        .weakened-transition-overlay {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(104, 87, 114, 0);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 450;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease, background 0.3s ease;
+        }
+
+        .weakened-transition-overlay.active {
+            opacity: 1;
+            visibility: visible;
+            background: rgba(104, 87, 114, 0.25);
+            animation: weakenedFlash 1.5s ease;
+        }
+
+        @keyframes weakenedFlash {
+            0% { background: rgba(104, 87, 114, 0); }
+            20% { background: rgba(104, 87, 114, 0.5); }
+            100% { background: rgba(104, 87, 114, 0.1); }
+        }
+
+        .weakened-transition-overlay .phase-title {
+            color: #F6AAB4;
+            text-shadow: 6px 6px 0 #2E2733, 0 0 45px #9A82A9;
+            animation: weakenedTextPulse 0.5s ease-in-out infinite alternate;
+            font-size: 56px;
+        }
+
+        .weakened-transition-overlay .weakened-subtitle {
+            font-family: 'VT323', monospace;
+            font-size: 36px;
+            color: var(--cream);
+            margin-top: 10px;
+            opacity: 0.9;
+            text-shadow: 2px 2px 0 #2E2733;
+        }
+
+        @keyframes weakenedTextPulse {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.03); }
+        }
+
+        /* Critical heal effect */
+        .player-sprite-container.crit-healing::before {
+            content: '💖';
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 24px;
+            animation: critHealSparkle 0.6s ease forwards;
+            z-index: 30;
+        }
+
+        @keyframes critHealSparkle {
+            0% { opacity: 0; transform: translateX(-50%) translateY(5px) scale(0.5); }
+            30% { opacity: 1; transform: translateX(-50%) translateY(0) scale(1.4); }
+            60% { opacity: 1; transform: translateX(-50%) translateY(-5px) scale(1.2); }
+            100% { opacity: 0; transform: translateX(-50%) translateY(-20px) scale(0.8); }
+        }
+
+        .floating-text.crit-heal { 
+            font-size: 16px; 
+            color: #FF69B4; 
+            text-shadow: 2px 2px 0 #000, 0 0 8px rgba(255, 105, 180, 0.5); 
+        }
+
         /* Screen shake for phase 2 */
         @keyframes screenShake {
             0%, 100% { transform: translate(0, 0); }
@@ -1189,7 +1292,7 @@
                     <div style="margin-bottom: 10px;"><span style="color: var(--rose);">!heal</span> — Heal yourself or tag another player to heal them</div>
                     <div style="margin-bottom: 10px;"><span style="color: var(--rose);">!shield</span> — Block all damage (you cannot attack or heal during this period)</div>
                     <div style="margin-bottom: 10px;"><span style="color: var(--rose);">!taunt 'message'</span> — Taunt Batsy to increase your next attack (18 char)</div>
-                    <div style="margin-bottom: 10px;"><span style="color: var(--rose);">!revive @player</span> — Revive a fallen teammate (15 seconds)</div>
+                    <div style="margin-bottom: 10px;"><span style="color: var(--rose);">!revive</span> — Revive yourself or tag another player to revive them (15 seconds)</div>
                     <div style="margin-top: 15px; font-size: 22px; color: var(--lavender); text-align: center;">All commands have cooldowns, so no need to spam.</div>
                 </div>
             </div>
@@ -1200,6 +1303,12 @@
         <!-- Rage Warning Overlay -->
         <div class="phase-transition-overlay" id="rage-overlay">
             <div class="phase-title" style="color: var(--rage-orange); text-shadow: 6px 6px 0 var(--bg-dark), 0 0 45px var(--rage-orange);">BATSY IS ENRAGED!</div>
+        </div>
+
+        <!-- Weakened Warning Overlay -->
+        <div class="weakened-transition-overlay" id="weakened-overlay">
+            <div class="phase-title">BATSY IS WEAKENED!</div>
+            <div class="weakened-subtitle">...calling all bats to attack...</div>
         </div>
 
         <!-- Result Screens -->
@@ -1300,6 +1409,14 @@
         // Death state image  
         const DEATH_STATE_IMG = 'images/death_state.PNG'
 
+        // Bat swarm animation frames (2-3 frames)
+        const BAT_FRAMES = [
+            'images/bat_frame_1.PNG',
+            'images/bat_frame_2.PNG',
+            'images/bat_frame_3.PNG',
+            'images/bat_frame_4.PNG'
+        ];
+
         // ===== GAME CONFIGURATION =====
         const CONFIG = {
             channel: 'geor0se',
@@ -1346,6 +1463,24 @@
             // Bow weapon stats
             bowDamage: 10,
             bowCritChance: 0.15,
+            
+            // Heal stats
+            healCritChance: 0.15,
+            healCritMultiplier: 2,
+            
+            // Shield cooldown
+            shieldCooldown: 15000,
+            shieldDuration: 5000,
+            
+            // Weakened phase (one-off bat swarm at random HP between 150-250)
+            weakenedHpMin: 150,
+            weakenedHpMax: 250,
+            batSwarmWaves: 3,
+            batsPerWave: 36,
+            batSwarmDamageMin: 2,
+            batSwarmDamageMax: 4,
+            batSwarmWaveDelay: 800,
+            batSwarmDuration: 2500,
             
             // Restricted zones (areas players cannot enter) - in SCREEN coordinates
             // Triangular corner zones approximated with stacked rectangles
@@ -1394,7 +1529,10 @@
             lobbyAnimationInterval: null,
             slamCount: 0,
             nextRageSlam: 0,
-            isRageAttack: false
+            isRageAttack: false,
+            weakenedTriggered: false,
+            weakenedHpTarget: 0,
+            isBatSwarmActive: false
         };
         
         // Calculate next rage slam (random between min-max slams)
@@ -1706,6 +1844,31 @@
                     setTimeout(() => createTone(880, 0.25, 'sine', 0.1), 400);
                     break;
                     
+                case 'batSwarm':
+                    // Ominous rising swarm - fluttering chaos building
+                    for (let i = 0; i < 6; i++) {
+                        setTimeout(() => {
+                            createTone(100 + i * 30, 0.3, 'sawtooth', 0.12 + i * 0.02, 200 + i * 50);
+                            createTone(150 + i * 20, 0.2, 'square', 0.08 + i * 0.01, 250 + i * 40);
+                        }, i * 80);
+                    }
+                    // Swoosh crescendo
+                    setTimeout(() => {
+                        createTone(80, 0.5, 'sawtooth', 0.25, 300);
+                        createTone(120, 0.4, 'square', 0.15, 250);
+                    }, 500);
+                    break;
+                    
+                case 'critHeal':
+                    // Bright sparkly critical heal - higher pitched and more magical
+                    createTone(659, 0.1, 'sine', 0.15);
+                    setTimeout(() => createTone(880, 0.1, 'sine', 0.15), 60);
+                    setTimeout(() => createTone(1047, 0.12, 'sine', 0.12), 120);
+                    setTimeout(() => createTone(1319, 0.15, 'sine', 0.1), 180);
+                    setTimeout(() => createTone(1568, 0.2, 'sine', 0.08), 240);
+                    setTimeout(() => createTone(1047, 0.15, 'sine', 0.06), 320);
+                    break;
+                    
                 case 'defeat':
                     // Sad game over
                     const defeatNotes = [400, 350, 300, 250, 200];
@@ -1734,6 +1897,7 @@
             lobbyPlayerCount: document.getElementById('lobby-player-count'),
             bossIntroOverlay: document.getElementById('boss-intro-overlay'),
             rageOverlay: document.getElementById('rage-overlay'),
+            weakenedOverlay: document.getElementById('weakened-overlay'),
             victoryScreen: document.getElementById('victory-screen'),
             defeatScreen: document.getElementById('defeat-screen'),
             battleLog: document.getElementById('battle-log'),
@@ -1847,7 +2011,11 @@
             gameState.slamCount = 0;
             gameState.nextRageSlam = calculateNextRageSlam();
             gameState.isRageAttack = false;
+            gameState.weakenedTriggered = false;
+            gameState.weakenedHpTarget = CONFIG.weakenedHpMin + Math.floor(Math.random() * (CONFIG.weakenedHpMax - CONFIG.weakenedHpMin + 1));
+            gameState.isBatSwarmActive = false;
             elements.game.classList.remove('rage-mode');
+            elements.game.classList.remove('weakened-mode');
             resetBoss();
             updateUI();
             
@@ -1941,11 +2109,13 @@
             Object.values(gameState.timers).forEach(t => clearInterval(t));
             gameState.timers = {};
             
-            // Clean up active projectiles
+            // Clean up active projectiles and bat swarm
             gameState.activeProjectiles.forEach(p => {
                 if (p.element && p.element.parentNode) p.element.remove();
             });
             gameState.activeProjectiles = [];
+            document.querySelectorAll('.swarm-bat').forEach(bat => bat.remove());
+            gameState.isBatSwarmActive = false;
             
             initAudio();
             playSound('bossDeath');
@@ -1995,9 +2165,12 @@
                 if (p.element && p.element.parentNode) p.element.remove();
             });
             gameState.activeProjectiles = [];
+            document.querySelectorAll('.swarm-bat').forEach(bat => bat.remove());
+            gameState.isBatSwarmActive = false;
             
-            ['lobbyOverlay', 'bossIntroOverlay', 'rageOverlay'].forEach(o => elements[o].classList.remove('active'));
+            ['lobbyOverlay', 'bossIntroOverlay', 'rageOverlay', 'weakenedOverlay'].forEach(o => elements[o].classList.remove('active'));
             elements.game.classList.remove('rage-mode');
+            elements.game.classList.remove('weakened-mode');
             elements.lobbyPlayerArea.innerHTML = '';
             document.querySelectorAll('.player-sprite-container').forEach(el => el.classList.remove('walking'));
             stopPlayerAnimation();
@@ -2016,6 +2189,7 @@
             
             // Reset boss sprite state
             elements.bossSprite.classList.remove('death-shake', 'death-collapse', 'death-final', 'damaged', 'slamming', 'frenzied');
+            elements.game.classList.remove('weakened-mode');
             setBossFrame('static');
             
             // Clear battle log except header
@@ -2408,20 +2582,39 @@
                 if (found && found.alive) healTarget = found;
             }
             
-            const amt = Math.min(CONFIG.healAmount, healTarget.maxHealth - healTarget.health);
+            // Critical heal check
+            const isCritHeal = Math.random() < CONFIG.healCritChance;
+            const baseHeal = CONFIG.healAmount;
+            const healValue = isCritHeal ? Math.floor(baseHeal * CONFIG.healCritMultiplier) : baseHeal;
+            
+            const amt = Math.min(healValue, healTarget.maxHealth - healTarget.health);
             healTarget.health += amt;
             player.healing += amt;
-            if (healTarget === player) {
-                addBattleLog(player.username, `healed for ${amt}`, 'heal');
+            
+            if (isCritHeal) {
+                if (healTarget === player) {
+                    addBattleLog(player.username, `CRIT healed for ${amt}!`, 'heal');
+                } else {
+                    addBattleLog(player.username, `CRIT healed ${healTarget.username} for ${amt}!`, 'heal');
+                }
             } else {
-                addBattleLog(player.username, `healed ${healTarget.username} for ${amt}`, 'heal');
+                if (healTarget === player) {
+                    addBattleLog(player.username, `healed for ${amt}`, 'heal');
+                } else {
+                    addBattleLog(player.username, `healed ${healTarget.username} for ${amt}`, 'heal');
+                }
             }
             
             const el = document.querySelector(`[data-username="${healTarget.username}"]`);
             if (el) {
-                el.classList.add('healing');
-                setTimeout(() => el.classList.remove('healing'), 500);
-                createFloatingText(el.getBoundingClientRect(), `+${amt}`, 'heal');
+                const healClass = isCritHeal ? 'crit-healing' : 'healing';
+                el.classList.add(healClass);
+                setTimeout(() => el.classList.remove(healClass), isCritHeal ? 600 : 500);
+                createFloatingText(el.getBoundingClientRect(), `+${amt}${isCritHeal ? '!' : ''}`, isCritHeal ? 'crit-heal' : 'heal');
+            }
+            
+            if (isCritHeal) {
+                playSound('critHeal');
             }
             
             updatePlayerSprite(healTarget.username);
@@ -2431,8 +2624,8 @@
             const player = gameState.players[username];
             if (!player || !player.alive) return;
             if (player.shielded) return; // Already shielded
-            if (Date.now() - player.lastShield < 15000) {
-                const remaining = Math.ceil((15000 - (Date.now() - player.lastShield)) / 1000);
+            if (Date.now() - player.lastShield < CONFIG.shieldCooldown) {
+                const remaining = Math.ceil((CONFIG.shieldCooldown - (Date.now() - player.lastShield)) / 1000);
                 addBattleLog(player.username, `shield on cooldown (${remaining}s)`, 'system');
                 return;
             }
@@ -2445,11 +2638,11 @@
                 el.classList.add('shielded');
             }
             
-            // Shield lasts 5 seconds
+            // Shield lasts for configured duration
             setTimeout(() => {
                 player.shielded = false;
                 if (el) el.classList.remove('shielded');
-            }, 5000);
+            }, CONFIG.shieldDuration);
         }
         
         function playerTaunt(username, message) {
@@ -2482,16 +2675,10 @@
                 setTimeout(() => bubble.remove(), 3000);
             }
         }
-        
-        function playerRevive(username, target) {
+
+            function playerRevive(username, target) {
             const player = gameState.players[username];
             if (!player) return;
-            
-            // Only dead players can revive
-            if (player.alive) {
-                addBattleLog(player.username, 'you must be defeated to revive others', 'system');
-                return;
-            }
             
             // One revive per game
             if (player.hasRevived) {
@@ -2499,31 +2686,41 @@
                 return;
             }
             
-            // Must target someone
-            if (!target || !target.startsWith('@')) {
-                addBattleLog(player.username, 'use !revive @playername', 'system');
-                return;
-            }
+            // Determine revive target
+            let targetPlayer;
             
-            const targetName = target.substring(1).toLowerCase();
-            const targetPlayer = Object.values(gameState.players).find(
-                p => p.username.toLowerCase() === targetName
-            );
-            
-            // Can't revive yourself
-            if (targetPlayer && targetPlayer.username === username) {
-                addBattleLog(player.username, 'cannot revive yourself', 'system');
-                return;
-            }
-            
-            if (!targetPlayer) {
-                addBattleLog(player.username, 'player not found', 'system');
-                return;
-            }
-            
-            if (targetPlayer.alive) {
-                addBattleLog(player.username, `${targetPlayer.username} is still alive`, 'system');
-                return;
+            if (target && target.startsWith('@')) {
+                // Reviving another player
+                const targetName = target.substring(1).toLowerCase();
+                targetPlayer = Object.values(gameState.players).find(
+                    p => p.username.toLowerCase() === targetName
+                );
+                
+                if (!targetPlayer) {
+                    addBattleLog(player.username, 'player not found', 'system');
+                    return;
+                }
+                
+                if (targetPlayer.username === username) {
+                    // Targeting yourself with @name — treat as self-revive
+                    if (player.alive) {
+                        addBattleLog(player.username, 'you are still alive', 'system');
+                        return;
+                    }
+                    targetPlayer = player;
+                } else {
+                    if (targetPlayer.alive) {
+                        addBattleLog(player.username, `${targetPlayer.username} is still alive`, 'system');
+                        return;
+                    }
+                }
+            } else {
+                // Self-revive (!revive with no target)
+                if (player.alive) {
+                    addBattleLog(player.username, 'you are still alive', 'system');
+                    return;
+                }
+                targetPlayer = player;
             }
             
             // Already being revived by someone else
@@ -2537,7 +2734,12 @@
             targetPlayer.reviving = true;
             
             initAudio();
-            addBattleLog(player.username, `is reviving ${targetPlayer.username}...`, 'heal');
+            
+            if (targetPlayer === player) {
+                addBattleLog(player.username, 'is reviving themselves...', 'heal');
+            } else {
+                addBattleLog(player.username, `is reviving ${targetPlayer.username}...`, 'heal');
+            }
             
             // Show revive bar on the target's death marker
             const targetEl = document.querySelector(`[data-username="${targetPlayer.username}"]`);
@@ -2628,6 +2830,9 @@
             
             // Don't start a new attack if rage attack is in progress
             if (gameState.isRageAttack) return;
+            
+            // Don't attack during bat swarm
+            if (gameState.isBatSwarmActive) return;
             
             const alive = Object.values(gameState.players).filter(p => p.alive);
             if (alive.length === 0) { endGame('defeat'); return; }
@@ -3035,10 +3240,249 @@
             elements.totalDamage.textContent = gameState.totalDamage.toLocaleString();
         }
 
+        // ===== WEAKENED PHASE: BAT SWARM =====
+        function checkWeakenedPhase() {
+            if (gameState.weakenedTriggered) return;
+            if (gameState.phase !== 'battle') return;
+            
+            if (gameState.boss.health <= gameState.weakenedHpTarget && gameState.boss.health > 0) {
+                triggerWeakenedPhase();
+            }
+        }
+        
+        function triggerWeakenedPhase() {
+            gameState.weakenedTriggered = true;
+            gameState.isBatSwarmActive = true;
+            
+            initAudio();
+            
+            // Show weakened overlay
+            elements.weakenedOverlay.classList.add('active');
+            elements.game.classList.add('weakened-mode');
+            elements.bossPhase.textContent = 'WEAKENED';
+            
+            addBattleLog('BATSY', 'is WEAKENED! Calling all bats!', 'boss');
+            
+            // Batsy enters pre-slam and roars — like the rage warning
+            elements.bossSprite.classList.remove('slamming', 'frenzied', 'damaged');
+            setBossFrame('preslam');
+            playSound('roar');
+            
+            // Screen shake during roar
+            elements.game.classList.add('shaking');
+            setTimeout(() => elements.game.classList.remove('shaking'), 800);
+            
+            // Temporarily pause boss attacks during swarm
+            if (gameState.timers.bossAttack) {
+                clearInterval(gameState.timers.bossAttack);
+            }
+            
+            // Hide overlay after 3 seconds (doubled from 1.5)
+            setTimeout(() => {
+                elements.weakenedOverlay.classList.remove('active');
+            }, 3000);
+            
+            // Return to static pose after roar, before bats arrive
+            setTimeout(() => {
+                setBossFrame('static');
+                elements.bossSprite.classList.remove('slamming', 'frenzied');
+            }, 2500);
+            
+            // Launch bat swarm after the overlay display
+            setTimeout(() => {
+                if (gameState.phase === 'battle') {
+                    playSound('batSwarm');
+                    launchBatSwarm();
+                }
+            }, 2800);
+            
+            // Resume boss attacks after all waves complete + breathing room
+            const totalSwarmTime = (CONFIG.batSwarmWaves - 1) * CONFIG.batSwarmWaveDelay + CONFIG.batSwarmDuration;
+            setTimeout(() => {
+                if (gameState.phase === 'battle') {
+                    gameState.isBatSwarmActive = false;
+                    gameState.timers.bossAttack = setInterval(bossAttack, CONFIG.attackInterval);
+                    addBattleLog('BATSY', 'resumes attacking...', 'boss');
+                }
+            }, 2800 + totalSwarmTime + 2000);
+        }
+        
+        function launchBatSwarm() {
+            if (gameState.phase !== 'battle') return;
+            
+            for (let wave = 0; wave < CONFIG.batSwarmWaves; wave++) {
+                setTimeout(() => {
+                    if (gameState.phase !== 'battle') return;
+                    
+                    addBattleLog('BATSY', `bat wave ${wave + 1}!`, 'boss');
+                    
+                    const batsInWave = CONFIG.batsPerWave;
+                    const duration = CONFIG.batSwarmDuration;
+                    
+                    for (let i = 0; i < batsInWave; i++) {
+                        const delay = (i / batsInWave) * (duration * 0.6);
+                        setTimeout(() => {
+                            if (gameState.phase === 'battle') {
+                                launchSingleBat(i, batsInWave, wave);
+                            }
+                        }, delay);
+                    }
+                }, wave * CONFIG.batSwarmWaveDelay);
+            }
+        }
+        
+        function launchSingleBat(index, total, wave) {
+            const bat = document.createElement('div');
+            bat.className = 'swarm-bat';
+            
+            // Use batsy projectile images as bat sprites (rotated for flight direction)
+            const batImg = document.createElement('img');
+            batImg.src = BAT_FRAMES[0];
+            bat.appendChild(batImg);
+            
+            // Frame cycling for wing flap animation
+            let batFrame = Math.floor(Math.random() * BAT_FRAMES.length); // Stagger start frames
+            const flapSpeed = 100 + Math.floor(Math.random() * 40); // Slight variation per bat
+            const flapInterval = setInterval(() => {
+                batFrame = (batFrame + 1) % BAT_FRAMES.length;
+                batImg.src = BAT_FRAMES[batFrame];
+            }, flapSpeed);
+            
+            // Vertical distribution across FULL screen height
+            const baseY = 40 + (index / total) * 1000;
+            const y = baseY + (Math.random() - 0.5) * 80;
+            
+            // Start off-screen left
+            const startX = -60;
+            const endX = 1980;
+            
+            // Swooping motion parameters
+            const swoopAmplitude = 30 + Math.random() * 40; // Height of swoop wave
+            const swoopFrequency = 1.5 + Math.random() * 1.5; // How many swoops across screen
+            const speed = 10 + Math.random() * 6; // Pixels per frame (2x faster)
+            
+            bat.style.left = startX + 'px';
+            bat.style.top = y + 'px';
+            
+            elements.projectilesContainer.appendChild(bat);
+            
+            let currentX = startX;
+            let hasHitPlayers = false; // Track which players this bat already hit
+            const hitPlayers = new Set();
+            
+            function animate() {
+                if (gameState.phase !== 'battle' || !bat.parentNode) {
+                    clearInterval(flapInterval);
+                    bat.remove();
+                    return;
+                }
+                
+                currentX += speed;
+                
+                // Swooping sine wave motion
+                const progress = (currentX - startX) / (endX - startX);
+                const swoopY = y + Math.sin(progress * Math.PI * 2 * swoopFrequency) * swoopAmplitude;
+                
+                bat.style.left = currentX + 'px';
+                bat.style.top = swoopY + 'px';
+                
+                // Slight rotation following the swoop curve
+                const nextSwoopY = y + Math.sin(((currentX + speed - startX) / (endX - startX)) * Math.PI * 2 * swoopFrequency) * swoopAmplitude;
+                const flyAngle = Math.atan2(nextSwoopY - swoopY, speed) * (180 / Math.PI);
+                bat.style.transform = `rotate(${flyAngle}deg)`;
+                
+                // Check collision with alive players (each bat hits each player max once)
+                const alivePlayers = Object.values(gameState.players).filter(p => p.alive);
+                for (const player of alivePlayers) {
+                    if (hitPlayers.has(player.username)) continue;
+                    if (player.shielded) continue;
+                    
+                    const px = CONFIG.playerAreaOffsetX + player.x;
+                    const py = CONFIG.playerAreaOffsetY + player.y;
+                    
+                    // Generous hitbox for swarm feel
+                    if (currentX > px - 30 && currentX < px + CONFIG.playerHitboxWidth + 10 &&
+                        swoopY > py - 20 && swoopY < py + CONFIG.playerHitboxHeight + 10) {
+                        
+                        hitPlayers.add(player.username);
+                        
+                        // Apply random swarm damage per hit
+                        const dmg = CONFIG.batSwarmDamageMin + Math.floor(Math.random() * (CONFIG.batSwarmDamageMax - CONFIG.batSwarmDamageMin + 1));
+                        player.health -= dmg;
+                        playSound('hit');
+                        addBattleLog(player.username, `took ${dmg} damage (bat swarm)`, 'hit');
+                        
+                        const el = document.querySelector(`[data-username="${player.username}"]`);
+                        if (el) {
+                            el.classList.add('damaged');
+                            setTimeout(() => el.classList.remove('damaged'), 250);
+                        }
+                        
+                        // Impact effect
+                        const impact = document.createElement('div');
+                        impact.className = 'impact';
+                        impact.style.left = (currentX - 20) + 'px';
+                        impact.style.top = (swoopY - 10) + 'px';
+                        elements.projectilesContainer.appendChild(impact);
+                        setTimeout(() => impact.remove(), 400);
+                        
+                        createFloatingText(
+                            { left: px, top: py, width: CONFIG.playerHitboxWidth, height: CONFIG.playerHitboxHeight },
+                            `-${dmg}`, 'damage'
+                        );
+                        
+                        updatePlayerSprite(player.username);
+                        
+                        // Check death
+                        if (player.health <= 0) {
+                            player.health = 0;
+                            player.alive = false;
+                            playSound('death');
+                            
+                            const deathMarker = document.createElement('div');
+                            deathMarker.className = 'impact death-marker';
+                            deathMarker.style.left = (px - 30) + 'px';
+                            deathMarker.style.top = (py - 30) + 'px';
+                            elements.projectilesContainer.appendChild(deathMarker);
+                            setTimeout(() => deathMarker.remove(), 600);
+                            
+                            createDeathEffect(px, py);
+                            addBattleLog(player.username, 'defeated!', 'death');
+                            updatePlayerSprite(player.username);
+                        }
+                        
+                        updateUI();
+                        
+                        // Check total team wipe
+                        if (Object.values(gameState.players).filter(p => p.alive).length === 0) {
+                            clearInterval(flapInterval);
+                            bat.remove();
+                            endGame('defeat');
+                            return;
+                        }
+                    }
+                }
+                
+                // Off screen right
+                if (currentX > endX) {
+                    clearInterval(flapInterval);
+                    bat.remove();
+                    return;
+                }
+                
+                requestAnimationFrame(animate);
+            }
+            
+            requestAnimationFrame(animate);
+        }
+
         function updateBossHealth() {
             const pct = (gameState.boss.health / gameState.boss.maxHealth) * 100;
             elements.bossHealthFill.style.width = `${pct}%`;
             elements.bossHealthText.textContent = `${gameState.boss.health} / ${gameState.boss.maxHealth}`;
+            
+            // Check for weakened phase trigger
+            checkWeakenedPhase();
         }
 
         function updateGameTimer() {
@@ -3234,12 +3678,14 @@
             if (e.key === 'h') handleCommand('Player5', '!heal');
             if (e.key === 'r') handleCommand('Player5', '!shield');
             if (e.key === 't') handleCommand('Player1', '!taunt You smell bad!');
-            if (e.key === 'v') handleCommand('Player2', '!revive @Player1');
+            if (e.key === 'v') handleCommand('Player1', '!revive');
+            if (e.key === 'b') handleCommand('Player2', '!revive @Player1');
             if (e.key === 'm') handleCommand('Player4', '!revive @Player3');
         });
 
         console.log('GeoRose Boss Battle v2.0 - Batsy The Beast');
-        console.log('ENTER=start, 1-5=join, A/S/D/F/G=attack (lobby: shoots other players), H=heal, R=shield, T=taunt, V=P2 revives P1');*/
+        console.log('ENTER=start, 1-5=join, A/S/D/F/G=attack (lobby: shoots other players), H=heal, R=shield, T=taunt, V=P1 self-revive, B=P2 revives P1');
+        console.log('Features: Weakened phase (bat swarm at 20% HP), Critical heals (15% chance, 2x), Best Healer callout');*/
     </script>
 </body>
 </html>
