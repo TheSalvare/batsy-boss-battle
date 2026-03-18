@@ -1426,6 +1426,10 @@
             
             // Boss Stats (single phase)
             bossHealth: 1000,
+            bossHealthMin: 500,
+            bossHealthMax: 1500,
+            bossHealthPerPlayer: 100,
+            bossHealthScaleStart: 5,
             attackInterval: 3000,
             hitChance: 0.5,
             projectilesMin: 5,
@@ -2047,6 +2051,17 @@
 
         function startBossIntro() {
             gameState.phase = 'intro';
+            
+            // Scale boss health based on player count
+            const playerCount = Object.keys(gameState.players).length;
+            const scaledHealth = Math.min(
+                CONFIG.bossHealthMax,
+                Math.max(CONFIG.bossHealthMin, playerCount * CONFIG.bossHealthPerPlayer)
+            );
+            gameState.boss = { health: scaledHealth, maxHealth: scaledHealth };
+            updateBossHealth();
+            
+            addBattleLog('System', `Boss HP set to ${scaledHealth} for ${playerCount} players`, 'system');
             
             // Clean up lobby systems
             stopLobbyMovement();
