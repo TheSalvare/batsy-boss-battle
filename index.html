@@ -21,7 +21,7 @@
             --gold: #FEE590;
             --player-attack: #FAE69B;
             --rage-orange: #FF6B35;
-            --shield-marker: url('images/hit_marker_shield.PNG');
+            --shield-marker: url('images/hit_marker_shield.webp');
         }
 
         body {
@@ -45,7 +45,7 @@
             top: 0; left: 0;
             width: 100%;
             height: 100%;
-            background-image: url('images/background.PNG');
+            background-image: url('images/background.webp');
             background-size: cover;
             background-position: center;
             z-index: 1;
@@ -69,7 +69,7 @@
             top: 0; left: 0;
             width: 100%;
             height: 100%;
-            background-image: url('images/background_overlay.PNG');
+            background-image: url('images/background_overlay.webp');
             background-size: cover;
             background-position: center;
             z-index: 35;
@@ -80,7 +80,7 @@
             top: 0; left: 0;
             width: 100%;
             height: 100%;
-            background-image: url('images/background_overlay_corners.PNG');
+            background-image: url('images/background_overlay_corners.webp');
             background-size: cover;
             background-position: center;
             z-index: 50;
@@ -401,7 +401,7 @@
             height: 50px;
             z-index: 41;
             pointer-events: none;
-            background-image: url('images/hit_marker_damage.PNG');
+            background-image: url('images/hit_marker_damage.webp');
             background-size: contain;
             background-repeat: no-repeat;
             background-position: center;
@@ -423,7 +423,7 @@
         .impact.death-marker {
             width: 60px;
             height: 60px;
-            background-image: url('images/hit_marker_death.PNG');
+            background-image: url('images/hit_marker_death.webp');
             animation: impactPop 0.6s ease-out forwards;
         }
 
@@ -615,7 +615,7 @@
         }
         
         .player-sprite-container.dead .knight-image {
-            content: url('images/death_state.PNG');
+            content: url('images/death_state.webp');
         }
         
         /* Shielded state - semi-transparent and immune */
@@ -1233,7 +1233,7 @@
             </div>
             <div class="boss-sprite-container">
                 <div class="boss-sprite" id="boss-sprite">
-                    <img class="boss-image" id="boss-image" src="images/batsy_static.PNG">
+                    <img class="boss-image" id="boss-image" src="images/batsy_static.webp">
                 </div>
             </div>
         </div>
@@ -1362,60 +1362,80 @@
 
                 // Knight animation frames (5 frames)
         const KNIGHT_FRAMES = {
-            1: 'images/knight_run_1.PNG',
-            2: 'images/knight_run_2.PNG',
-            3: 'images/knight_run_3.PNG',
-            4: 'images/knight_run_4.PNG',
-            5: 'images/knight_run_5.PNG'
+            1: 'images/knight_run_1.webp',
+            2: 'images/knight_run_2.webp',
+            3: 'images/knight_run_3.webp',
+            4: 'images/knight_run_4.webp',
+            5: 'images/knight_run_5.webp'
         };
 
         // Revived player animation frames (5 frames - ghost/skeleton style)
         const REVIVED_FRAMES = {
-            1: 'images/revived_player_1.PNG',
-            2: 'images/revived_player_2.PNG',
-            3: 'images/revived_player_3.PNG',
-            4: 'images/revived_player_4.PNG',
-            5: 'images/revived_player_5.PNG'
+            1: 'images/revived_player_1.webp',
+            2: 'images/revived_player_2.webp',
+            3: 'images/revived_player_3.webp',
+            4: 'images/revived_player_4.webp',
+            5: 'images/revived_player_5.webp'
         };
 
                 // ===== BATSY ANIMATION FRAMES =====
         const BATSY_FRAMES = {
-            'static': 'images/batsy_static.PNG',
-            'preslam': 'images/batsy_preslam.PNG',
-            'slam': 'images/batsy_slam.PNG',
-            'death': 'images/batsy_death.PNG'
+            'static': 'images/batsy_static.webp',
+            'preslam': 'images/batsy_preslam.webp',
+            'slam': 'images/batsy_slam.webp',
+            'death': 'images/batsy_death.webp'
         };
         
         // Projectile images per weapon
         const PROJECTILE_IMAGES = {
-            bow: 'images/player_arrow_bow.PNG',
-            bossLarge: 'images/projectile_large.PNG',
-            bossSmall: 'images/projectile_small.PNG',
+            bow: 'images/player_arrow_bow.webp',
+            bossLarge: 'images/projectile_large.webp',
+            bossSmall: 'images/projectile_small.webp',
         };
 
         // Falling projectile images
         const FALL_PROJECTILE_IMAGES = {
-            rockSlideSmall: 'images/projectile_rain_small.PNG',
-            rockSlideLarge: 'images/projectile_rain_large.PNG'
+            rockSlideSmall: 'images/projectile_rain_small.webp',
+            rockSlideLarge: 'images/projectile_rain_large.webp'
         };
         
         // Hit marker images
         const HIT_MARKERS = {
-            damage: 'images/hit_marker_damage.PNG',
-            death: 'images/hit_marker_death.PNG',
-            shield: 'images/hit_marker_shield.PNG'
+            damage: 'images/hit_marker_damage.webp',
+            death: 'images/hit_marker_death.webp',
+            shield: 'images/hit_marker_shield.webp'
         };
         
         // Death state image  
-        const DEATH_STATE_IMG = 'images/death_state.PNG'
+        const DEATH_STATE_IMG = 'images/death_state.webp'
 
         // Bat swarm animation frames (2-3 frames)
         const BAT_FRAMES = [
-            'images/bat_frame_1.PNG',
-            'images/bat_frame_2.PNG',
-            'images/bat_frame_3.PNG',
-            'images/bat_frame_4.PNG'
+            'images/bat_frame_1.webp',
+            'images/bat_frame_2.webp',
+            'images/bat_frame_3.webp',
+            'images/bat_frame_4.webp'
         ];
+
+        // ===== PRELOAD =====
+        // Load and decode every sprite as soon as the page opens, so no frame has to
+        // download mid-fight. Kept in SPRITE_CACHE so the browser holds on to them.
+        const SPRITE_CACHE = [];
+        (function preloadSprites() {
+            const urls = new Set([
+                ...Object.values(KNIGHT_FRAMES), ...Object.values(REVIVED_FRAMES),
+                ...Object.values(BATSY_FRAMES), ...Object.values(PROJECTILE_IMAGES),
+                ...Object.values(FALL_PROJECTILE_IMAGES), ...Object.values(HIT_MARKERS),
+                DEATH_STATE_IMG, ...BAT_FRAMES,
+                'images/background.webp', 'images/background_overlay.webp', 'images/background_overlay_corners.webp'
+            ]);
+            urls.forEach(src => {
+                const img = new Image();
+                img.src = src;
+                if (img.decode) img.decode().catch(() => {});
+                SPRITE_CACHE.push(img);
+            });
+        })();
 
         // ===== GAME CONFIGURATION =====
         const CONFIG = {
